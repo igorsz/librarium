@@ -1,0 +1,3 @@
+# librarium
+
+Elasticsearch project.
