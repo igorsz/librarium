@@ -7,11 +7,15 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -55,5 +59,10 @@ public class Elasticsearch {
         return client.prepareSearch().get();
     }
 
+
+    public void search(JSONObject search, OutputStream outputStream) {
+        SearchResponse searchResponse = client.prepareSearch().setQuery(QueryBuilders.simpleQueryStringQuery(search.toString())).execute().actionGet();
+        logger.info(searchResponse.toString());
+    }
 
 }
