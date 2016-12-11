@@ -12,5 +12,4 @@ public class LibrariumServiceApplication {
 		SpringApplication.run(LibrariumServiceApplication.class, args);
 	}
 
-	//commit check
 }
