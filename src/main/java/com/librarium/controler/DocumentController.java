@@ -3,8 +3,9 @@ package com.librarium.controler;
 import com.librarium.configuration.Configuration;
 import com.librarium.controler.api.ApiDispatcher;
 import com.librarium.search.Elasticsearch;
-import com.librarium.search.Namespace;
-import com.librarium.search.NamespaceNameException;
+import com.librarium.search.Index;
+import com.librarium.search.IndexNameException;
+import com.librarium.search.Type;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
 import org.json.simple.JSONObject;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,52 +32,58 @@ import java.util.List;
 public class DocumentController {
 
     @Autowired
-    Configuration configuration;
-
-    @Autowired
-    Elasticsearch elasticsearch;
-
-    @Autowired
     ApiDispatcher apiDispatcher;
 
     private static final String template = "Hello, %s!";
-
-    @RequestMapping(value = "/greeting", produces = "application/json")
-    public String greeting(@RequestParam(value = "name", defaultValue = "World") String name) throws IOException {
-        Response search = elasticsearch.search();
-        String response = name + configuration.getElasticsearchConfiguration().getNodes() + " Response: " + EntityUtils.toString(search.getEntity());;
-        return response;
-    }
 
     @PostMapping(value = "/_search", produces = "application/json")
     public ResponseEntity<String> search(@RequestBody JSONObject search, HttpServletResponse response) {
         OutputStream outputStream = new ByteArrayOutputStream();
         apiDispatcher.search(search,outputStream);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<String>(outputStream.toString(), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{namespaces}/_search", produces = "application/json")
-    public ResponseEntity<String> search(@PathVariable List<String> namespaces, @RequestBody JSONObject search, HttpServletResponse response) throws NamespaceNameException {
-        List<Namespace> namespacesList = prepareNamespaceList(namespaces);
+    @PostMapping(value = "/{indices}/_search", produces = "application/json")
+    public ResponseEntity<String> search(@PathVariable List<String> indices,
+                                         @RequestBody JSONObject search) throws IndexNameException {
+        List<Index> indexList = prepareIndicesList(indices);
         OutputStream outputStream = new ByteArrayOutputStream();
-        apiDispatcher.search(search,outputStream, namespacesList);
+        apiDispatcher.search(search,outputStream, indexList);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{indices}/{types}/_search", produces = "application/json")
+    public ResponseEntity<String> search(@PathVariable List<String> indices,
+                                         @PathVariable List<String> types,
+                                         @RequestBody JSONObject search) throws IndexNameException {
+        List<Index> indexList = prepareIndicesList(indices);
+        List<Type> typeList = prepareTypesList(types);
+        OutputStream outputStream = new ByteArrayOutputStream();
+        apiDispatcher.search(search,outputStream, indexList, typeList);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
+    }
+
+    private List<Type> prepareTypesList(List<String> types) {
+        List<Type> typeList = new ArrayList<Type>();
+        for(String type : types) typeList.add(new Type(type));
+        return typeList;
+    }
+
+    private List<Index> prepareIndicesList(List<String> indices) throws IndexNameException {
+        List<Index> indicesList = new ArrayList<Index>();
+        for(String namespace : indices) indicesList.add(new Index(namespace));
+        return  indicesList;
+    }
+
+    private HttpHeaders getJsonHttpHeader(){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<String>(outputStream.toString(), httpHeaders, HttpStatus.OK);
+        return httpHeaders;
     }
 
-    private List<Namespace> prepareNamespaceList(List<String> namespaces) throws NamespaceNameException {
-        List<Namespace> namespacesList = new ArrayList<Namespace>();
-        for(String namespace : namespaces){
-            namespacesList.add(new Namespace(namespace));
-        }
-        return  namespacesList;
-    }
-
-    @ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="Namespace not in lower case only")  // 400
-    @ExceptionHandler(NamespaceNameException.class)
+    //Exception mappings
+    @ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="Index not in lower case only")  // 400
+    @ExceptionHandler(IndexNameException.class)
     public void conflict() {
         // Nothing to do
     }

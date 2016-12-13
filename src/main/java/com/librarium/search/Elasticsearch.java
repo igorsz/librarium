@@ -39,29 +39,14 @@ public class Elasticsearch {
     private Configuration configuration;
     private final String HTTP_GET = "GET";
     private final String HTTP_POST = "POST";
+    private final String HTTP_PUT = "PUT";
+    private final String HTTP_DELETE = "DELETE";
 
     @Autowired
     public Elasticsearch(Configuration configuration) {
         this.configuration = configuration;
         setUpClient();
     }
-
-//    private void setUpClient() {
-//        Settings settings = Settings.builder()
-//                .put("cluster.name", "librarium")
-//                .put("xpack.security.user", "elastic:changeme").build();
-//
-//        client = new PreBuiltXPackTransportClient(settings);
-//        for (String address : configuration.getElasticsearchConfiguration().getNodes().keySet()) {
-//            int port = Integer.parseInt(configuration.getElasticsearchConfiguration().getNodes().get(address));
-//            try {
-//                client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(address), port));
-//            } catch (UnknownHostException e) {
-//                logger.error("Elasticsearch address {} not found", address);
-//                exit(1);
-//            }
-//        }
-//    }
 
     private void setUpClient(){
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -79,7 +64,7 @@ public class Elasticsearch {
                 ElasticsearchHostsSniffer.DEFAULT_SNIFF_REQUEST_TIMEOUT,
                 ElasticsearchHostsSniffer.Scheme.HTTP);
 
-        Sniffer sniffer = Sniffer.builder(restClient)
+        this.sniffer = Sniffer.builder(restClient)
                 .setHostsSniffer(hostsSniffer)
                 .build();
     }
@@ -91,7 +76,7 @@ public class Elasticsearch {
             response = restClient.performRequest(
                     HTTP_GET,
                     "_search",
-                    new Hashtable(),
+                    new Hashtable<String, String>(),
                     new StringEntity(query));
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,31 +86,26 @@ public class Elasticsearch {
 
 
     public void search(JSONObject search, OutputStream outputStream) {
-        String query = search.toString();
-        Response response = null;
-        try {
-            response = restClient.performRequest(
-                    HTTP_POST,
-                    "_search",
-                    new Hashtable(),
-                    new StringEntity(query));
-            String stringResponse = EntityUtils.toString(response.getEntity());
-            outputStream.write(stringResponse.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        executeESRequest(HTTP_POST, "/_search", search.toString(), outputStream);
     }
 
+    public void search(JSONObject search, OutputStream outputStream, List<Index> indexList) {
+        String endpoint = prepareIndexString(indexList)+"/_search";
+        executeESRequest(HTTP_POST, endpoint, search.toString(), outputStream);
+    }
 
-    public void search(JSONObject search, OutputStream outputStream, List<Namespace> namespacesList) {
-        String query = search.toString();
-        Response response = null;
-        String endpoint = prepareNamespacesString(namespacesList)+"/_search";
+    public void search(JSONObject search, OutputStream outputStream, List<Index> indexList, List<Type> typeList) {
+        String endpoint = prepareIndexString(indexList)+"/"+prepareTypeString(typeList)+"/_search";
+        executeESRequest(HTTP_POST, endpoint, search.toString(), outputStream);
+    }
+
+    private void executeESRequest(String httpMethod, String endpoint, String query, OutputStream outputStream) {
+        Response response;
         try {
             response = restClient.performRequest(
-                    HTTP_POST,
+                    httpMethod,
                     endpoint,
-                    new Hashtable(),
+                    new Hashtable<String, String>(),
                     new StringEntity(query));
             String stringResponse = EntityUtils.toString(response.getEntity());
             outputStream.write(stringResponse.getBytes());
@@ -134,12 +114,39 @@ public class Elasticsearch {
         }
     }
 
-    private String prepareNamespacesString(List<Namespace> namespacesList) {
-        String namespaces = namespacesList.get(0).getNamespace();
-        namespacesList.remove(0);
-        for(Namespace namespace : namespacesList){
-            namespaces+=","+namespace.getNamespace();
+    private void executeESRequest(String httpMethod, String endpoint, OutputStream outputStream) {
+        Response response;
+        try {
+            response = restClient.performRequest(
+                    httpMethod,
+                    endpoint,
+                    new Hashtable<String, String>());
+            String stringResponse = EntityUtils.toString(response.getEntity());
+            outputStream.write(stringResponse.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    private String prepareIndexString(List<Index> indexList) {
+        String namespaces = indexList.get(0).getIndex();
+        indexList.remove(0);
+        for(Index index : indexList) namespaces += "," + index.getIndex();
         return namespaces;
+    }
+
+    private String prepareTypeString(List<Type> typeList) {
+        String namespaces = typeList.get(0).getType();
+        typeList.remove(0);
+        for(Type type : typeList) namespaces += "," + type.getType();
+        return namespaces;
+    }
+
+    public void createIndex(Index index, JSONObject body, OutputStream outputStream) {
+        executeESRequest(HTTP_PUT, "/"+index.getIndex(), body.toString(), outputStream);
+    }
+
+    public void deleteIndex(Index index, OutputStream outputStream) {
+        executeESRequest(HTTP_DELETE,"/"+index.getIndex(),outputStream);
     }
 }
