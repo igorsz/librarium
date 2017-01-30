@@ -1,9 +1,12 @@
 package com.librarium.controler.api;
 
+import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
 import com.librarium.search.Type;
 import org.json.simple.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -20,4 +23,10 @@ public interface ApiStrategy {
     void createIndex(Index index, JSONObject body, OutputStream outputStream);
 
     void createIndex(Index index, OutputStream outputStream);
+
+    void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException;
+
+    void deleteDocument(FullDocumentPath fullDocumentPath);
+
+    void updateDocumnt(FullDocumentPath fullDocumentPath, String metadata, String transformations);
 }

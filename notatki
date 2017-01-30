@@ -1,0 +1,14 @@
+1) id w ES: index/path/file-
+
+
+
+
+
+
+
+
+
+
+
+###  ODAPALANIE MONGO  ###
+C:\Users\Igor\workspace\inzynier\mongodb\bin\mongod.exe -dbpath "C:\Users\Igor\workspace\inzynier\mongodb\data"

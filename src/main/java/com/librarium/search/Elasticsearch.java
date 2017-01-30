@@ -1,6 +1,8 @@
 package com.librarium.search;
 
 import com.librarium.configuration.Configuration;
+import com.librarium.kafka.KafkaMsgProducer;
+import com.librarium.persistance.MongoDB;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -35,12 +37,17 @@ public class Elasticsearch {
 
     private static final Logger logger = LogManager.getLogger(Elasticsearch.class);
     private RestClient restClient;
-    Sniffer sniffer;
     private Configuration configuration;
     private final String HTTP_GET = "GET";
     private final String HTTP_POST = "POST";
     private final String HTTP_PUT = "PUT";
     private final String HTTP_DELETE = "DELETE";
+
+    @Autowired
+    KafkaMsgProducer kafkaMsgProducer;
+
+    @Autowired
+    MongoDB mongoDB;
 
     @Autowired
     public Elasticsearch(Configuration configuration) {
@@ -49,22 +56,22 @@ public class Elasticsearch {
     }
 
     private void setUpClient(){
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("elastic", "changeme"));
+//        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+//        credentialsProvider.setCredentials(AuthScope.ANY,
+//                new UsernamePasswordCredentials("elastic", "changeme"));
 
-        restClient = RestClient.builder(new HttpHost("localhost", 9200))
-                .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                    }
-                }).build();
+        restClient = RestClient.builder(new HttpHost("localhost", 9200)).build();
+//                .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+//                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+//                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+//                    }
+//                }).build();
 
         HostsSniffer hostsSniffer = new ElasticsearchHostsSniffer(restClient,
                 ElasticsearchHostsSniffer.DEFAULT_SNIFF_REQUEST_TIMEOUT,
                 ElasticsearchHostsSniffer.Scheme.HTTP);
 
-        this.sniffer = Sniffer.builder(restClient)
+        Sniffer sniffer = Sniffer.builder(restClient)
                 .setHostsSniffer(hostsSniffer)
                 .build();
     }
@@ -149,4 +156,5 @@ public class Elasticsearch {
     public void deleteIndex(Index index, OutputStream outputStream) {
         executeESRequest(HTTP_DELETE,"/"+index.getIndex(),outputStream);
     }
+
 }
