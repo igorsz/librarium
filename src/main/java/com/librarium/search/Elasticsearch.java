@@ -4,18 +4,12 @@ import com.librarium.configuration.Configuration;
 import com.librarium.kafka.KafkaMsgProducer;
 import com.librarium.persistance.MongoDB;
 import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.sniff.ElasticsearchHostsSniffer;
 import org.elasticsearch.client.sniff.HostsSniffer;
 import org.elasticsearch.client.sniff.Sniffer;
@@ -23,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.List;
@@ -116,8 +111,8 @@ public class Elasticsearch {
                     new StringEntity(query));
             String stringResponse = EntityUtils.toString(response.getEntity());
             outputStream.write(stringResponse.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Request error. Endpoint: {}, http method: {}",endpoint,httpMethod);
         }
     }
 
@@ -130,8 +125,8 @@ public class Elasticsearch {
                     new Hashtable<String, String>());
             String stringResponse = EntityUtils.toString(response.getEntity());
             outputStream.write(stringResponse.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Request error. Endpoint: {}, http method: {}",endpoint,httpMethod);
         }
     }
 
@@ -157,4 +152,7 @@ public class Elasticsearch {
         executeESRequest(HTTP_DELETE,"/"+index.getIndex(),outputStream);
     }
 
+    public void listIndices(OutputStream outputStream) {
+        executeESRequest(HTTP_GET,"/_cat/indices?v",outputStream);
+    }
 }

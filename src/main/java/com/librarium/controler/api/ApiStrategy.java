@@ -1,5 +1,7 @@
 package com.librarium.controler.api;
 
+import com.librarium.persistance.DocumentAlreadyExistsException;
+import com.librarium.persistance.DocumentNotExistsException;
 import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
 import com.librarium.search.Type;
@@ -24,9 +26,11 @@ public interface ApiStrategy {
 
     void createIndex(Index index, OutputStream outputStream);
 
-    void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException;
+    void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException;
 
-    void deleteDocument(FullDocumentPath fullDocumentPath);
+    void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException;
 
-    void updateDocumnt(FullDocumentPath fullDocumentPath, String metadata, String transformations);
+    void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException;
+
+    void listIndices(OutputStream outputStream);
 }

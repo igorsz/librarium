@@ -1,6 +1,8 @@
 package com.librarium.controler;
 
 import com.librarium.controler.api.ApiDispatcher;
+import com.librarium.persistance.DocumentAlreadyExistsException;
+import com.librarium.persistance.DocumentNotExistsException;
 import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
 import com.librarium.search.IndexNameException;
@@ -68,7 +70,8 @@ public class DocumentController {
                                               @PathVariable String type,
                                               @PathVariable String documentId,
                                               @RequestParam MultipartFile file,
-                                              @RequestParam(required = false) Map<String,String> params) throws IOException {
+                                              @RequestParam(required = false) Map<String,String> params)
+            throws IOException, DocumentAlreadyExistsException {
         String metadata = params.get("metadata");
         String transformations = params.get("transformations");
         if (!file.isEmpty()) {
@@ -82,7 +85,8 @@ public class DocumentController {
     @DeleteMapping(value = "/{index}/{type}/{documentId}", produces = "application/json")
     public ResponseEntity<String> deleteDocument(@PathVariable String index,
                                                  @PathVariable String type,
-                                                 @PathVariable String documentId) {
+                                                 @PathVariable String documentId)
+            throws DocumentNotExistsException {
         apiDispatcher.deleteDocument(new FullDocumentPath(index, type, documentId));
         return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
     }
@@ -91,10 +95,10 @@ public class DocumentController {
     public ResponseEntity<String> updateDocument(@PathVariable String index,
                                                  @PathVariable String type,
                                                  @PathVariable String documentId,
-                                                 @RequestParam(required = false) Map<String,String> params){
+                                                 @RequestParam(required = false) Map<String,String> params)
+            throws DocumentNotExistsException {
         String metadata = params.get("metadata");
-        String transformations = params.get("transformations");
-        apiDispatcher.updateDocument(new FullDocumentPath(index, type, documentId), metadata , transformations);
+        apiDispatcher.updateDocument(new FullDocumentPath(index, type, documentId), metadata);
         return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
     }
 
@@ -115,12 +119,4 @@ public class DocumentController {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
-
-    //Exception mappings
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Index not in lower case only")  // 400
-    @ExceptionHandler(IndexNameException.class)
-    public void conflict() {
-        // Nothing to do
-    }
-
 }

@@ -11,12 +11,10 @@ import org.apache.logging.log4j.Logger;
 @Value
 public class Index {
 
-    private static final Logger logger = LogManager.getLogger(Index.class);
     private String index;
 
     public Index(String index) throws IndexNameException {
         if(!index.toLowerCase().equals(index)){
-            logger.error("Index: {} is not lower case only",index);
             throw new IndexNameException(index);
         }
         this.index = index;

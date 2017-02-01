@@ -1,6 +1,8 @@
 package com.librarium.controler.api;
 
 import com.librarium.authentication.Authentication;
+import com.librarium.persistance.DocumentAlreadyExistsException;
+import com.librarium.persistance.DocumentNotExistsException;
 import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
 import com.librarium.search.Type;
@@ -56,18 +58,23 @@ public class ApiDispatcher {
         getApiStrategy().createIndex(index, outputStream);
     }
 
-    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException {
+    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
         authentication.authenticate();
         getApiStrategy().putDocument(fullDocumentPath, file, metadata, transformations);
     }
 
-    public void deleteDocument(FullDocumentPath fullDocumentPath) {
+    public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
         authentication.authenticate();
         getApiStrategy().deleteDocument(fullDocumentPath);
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata, String transformations) {
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
         authentication.authenticate();
-        getApiStrategy().updateDocumnt(fullDocumentPath, metadata, transformations);
+        getApiStrategy().updateDocument(fullDocumentPath, metadata);
+    }
+
+    public void listIndices(OutputStream outputStream) {
+        authentication.authenticate();
+        getApiStrategy().listIndices(outputStream);
     }
 }

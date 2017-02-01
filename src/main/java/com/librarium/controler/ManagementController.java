@@ -45,18 +45,17 @@ public class ManagementController {
         return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/_indices", produces = "text/plain")
+    public ResponseEntity<String> listIndices(){
+        OutputStream outputStream = new ByteArrayOutputStream();
+        dispatcher.listIndices(outputStream);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
+    }
+
 
     private HttpHeaders getJsonHttpHeader(){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
-
-    //Exception mappings
-    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="Index not in lower case only")  // 400
-    @ExceptionHandler(IndexNameException.class)
-    public void conflict() {
-        // Nothing to do
-    }
-
 }

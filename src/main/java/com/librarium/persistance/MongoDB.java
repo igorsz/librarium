@@ -2,11 +2,12 @@ package com.librarium.persistance;
 
 import com.librarium.configuration.Configuration;
 import com.librarium.search.FullDocumentPath;
-import com.mongodb.*;
-import com.mongodb.client.FindIterable;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,27 +28,38 @@ public class MongoDB {
     private MongoDatabase database;
     private MongoCollection<BasicDBObject> collection;
 
-    public MongoDB(){
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+    public MongoDB() {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
         this.database = mongoClient.getDatabase("test");
-        this.collection = database.getCollection("documents",BasicDBObject.class);
+        this.collection = database.getCollection("documents", BasicDBObject.class);
 
     }
 
-    public void persistDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException {
-        BasicDBObject document = new BasicDBObject("key",fullDocumentPath.getFullPath())
-                .append("content",new String(file.getBytes()))
+    public void persistDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations)
+            throws IOException, DocumentAlreadyExistsException {
+        BasicDBObject document = new BasicDBObject("key", fullDocumentPath.getFullPath())
+                .append("content", new String(file.getBytes()))
                 .append("metadata", metadata)
                 .append("transformations", transformations);
-        collection.insertOne(document);
+        try {
+            collection.insertOne(document);
+        } catch (MongoWriteException e) {
+            throw new DocumentAlreadyExistsException(fullDocumentPath);
+        }
     }
 
-    public void deleteDocument(FullDocumentPath fullDocumentPath) {
-        BasicDBObject document = collection.findOneAndDelete(new Document("key",fullDocumentPath.getFullPath()));
+    public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
+        BasicDBObject document = collection.findOneAndDelete(new Document("key", fullDocumentPath.getFullPath()));
+        if (document == null) {
+            throw new DocumentNotExistsException(fullDocumentPath);
+        }
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata, String transformations) {
-        collection.updateOne(new BasicDBObject("key", fullDocumentPath.getFullPath()),
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
+        UpdateResult updateResult = collection.updateOne(new BasicDBObject("key", fullDocumentPath.getFullPath()),
                 new BasicDBObject("$set", new BasicDBObject("metadata", metadata)));
+        if (updateResult.getMatchedCount() != 1){
+            throw new DocumentNotExistsException(fullDocumentPath);
+        }
     }
 }

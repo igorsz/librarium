@@ -1,6 +1,8 @@
 package com.librarium.controler.api;
 
 import com.librarium.kafka.KafkaMsgProducer;
+import com.librarium.persistance.DocumentAlreadyExistsException;
+import com.librarium.persistance.DocumentNotExistsException;
 import com.librarium.persistance.MongoDB;
 import com.librarium.search.Elasticsearch;
 import com.librarium.search.FullDocumentPath;
@@ -51,18 +53,22 @@ public class DefaultApiStrategy implements ApiStrategy {
         elasticsearch.deleteIndex(index, outputStream);
     }
 
-    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException {
+    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
         mongoDB.persistDocument(fullDocumentPath, file, metadata, transformations);
         kafka.createDocument(fullDocumentPath,metadata,transformations);
     }
 
-    public void deleteDocument(FullDocumentPath fullDocumentPath) {
+    public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
         mongoDB.deleteDocument(fullDocumentPath);
         kafka.deleteDocument(fullDocumentPath);
     }
 
-    public void updateDocumnt(FullDocumentPath fullDocumentPath, String metadata, String transformations) {
-        mongoDB.updateDocument(fullDocumentPath, metadata, transformations);
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
+        mongoDB.updateDocument(fullDocumentPath, metadata);
         kafka.updateDocument(fullDocumentPath);
+    }
+
+    public void listIndices(OutputStream outputStream) {
+        elasticsearch.listIndices(outputStream);
     }
 }
