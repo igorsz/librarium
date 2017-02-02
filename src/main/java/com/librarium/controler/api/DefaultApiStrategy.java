@@ -1,6 +1,7 @@
 package com.librarium.controler.api;
 
 import com.librarium.kafka.KafkaMsgProducer;
+import com.librarium.persistance.Cassandra;
 import com.librarium.persistance.DocumentAlreadyExistsException;
 import com.librarium.persistance.DocumentNotExistsException;
 import com.librarium.persistance.MongoDB;
@@ -31,6 +32,9 @@ public class DefaultApiStrategy implements ApiStrategy {
     MongoDB mongoDB;
 
     @Autowired
+    Cassandra cassandra;
+
+    @Autowired
     KafkaMsgProducer kafka;
 
     public void search(JSONObject search, OutputStream outputStream) {
@@ -54,17 +58,17 @@ public class DefaultApiStrategy implements ApiStrategy {
     }
 
     public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
-        mongoDB.persistDocument(fullDocumentPath, file, metadata, transformations);
+        cassandra.persistDocument(fullDocumentPath, file, metadata, transformations);
         kafka.createDocument(fullDocumentPath,metadata,transformations);
     }
 
     public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
-        mongoDB.deleteDocument(fullDocumentPath);
+        cassandra.deleteDocument(fullDocumentPath);
         kafka.deleteDocument(fullDocumentPath);
     }
 
     public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
-        mongoDB.updateDocument(fullDocumentPath, metadata);
+        cassandra.updateDocument(fullDocumentPath, metadata);
         kafka.updateDocument(fullDocumentPath);
     }
 

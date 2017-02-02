@@ -42,9 +42,6 @@ public class Elasticsearch {
     KafkaMsgProducer kafkaMsgProducer;
 
     @Autowired
-    MongoDB mongoDB;
-
-    @Autowired
     public Elasticsearch(Configuration configuration) {
         this.configuration = configuration;
         setUpClient();

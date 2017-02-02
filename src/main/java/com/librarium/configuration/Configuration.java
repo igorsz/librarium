@@ -18,11 +18,14 @@ public class Configuration {
     @Autowired
     KafkaConfiguration kafkaConfiguration;
 
+    @Autowired
+    CassandraConfiguration cassandraConfiguration;
+
+    public CassandraConfiguration getCassandraConfiguration() { return cassandraConfiguration; }
+
     public ElasticsearchConfiguration getElasticsearchConfiguration() {
         return elasticsearchConfiguration;
     }
 
-    public KafkaConfiguration getKafkaConfiguration() {
-        return kafkaConfiguration;
-    }
+    public KafkaConfiguration getKafkaConfiguration() { return kafkaConfiguration; }
 }

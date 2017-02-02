@@ -19,8 +19,9 @@ import java.io.IOException;
  * Created by Igor on 04.01.2017.
  */
 
+@Deprecated
 @Component
-public class MongoDB {
+public class MongoDB implements Persistance{
 
     @Autowired
     Configuration configuration;
