@@ -1,4 +1,4 @@
-package com.librarium.healthcheck;
+package com.librarium.configuration.akka;
 
 import akka.actor.AbstractExtensionId;
 import akka.actor.ExtendedActorSystem;
@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class AkkaSpringExtension extends AbstractExtensionId<AkkaSpringExtension.AkkaSpringExt> {
 
-    public static final AkkaSpringExtension AKKA_SPRING_EXTENSION_PROVIDER = new AkkaSpringExtension();
+    public static final AkkaSpringExtension AkkaSpringExtentionProvider = new AkkaSpringExtension();
 
     public AkkaSpringExt createExtension(ExtendedActorSystem extendedActorSystem) {
         return new AkkaSpringExt();

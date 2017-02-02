@@ -1,4 +1,4 @@
-package com.librarium.healthcheck;
+package com.librarium.configuration.akka;
 
 import akka.actor.Actor;
 import akka.actor.IndirectActorProducer;

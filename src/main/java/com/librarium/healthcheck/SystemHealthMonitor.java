@@ -2,7 +2,6 @@ package com.librarium.healthcheck;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.util.Timeout;
 import com.librarium.search.Elasticsearch;
 import org.apache.logging.log4j.LogManager;
@@ -15,11 +14,10 @@ import scala.concurrent.duration.FiniteDuration;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 import java.util.concurrent.TimeUnit;
 
 import static akka.pattern.Patterns.ask;
-import static com.librarium.healthcheck.AkkaSpringExtension.AKKA_SPRING_EXTENSION_PROVIDER;
+import static com.librarium.configuration.akka.AkkaSpringExtension.AkkaSpringExtentionProvider;
 
 /**
  * Created by Igor on 31.01.2017.
@@ -38,24 +36,24 @@ public class SystemHealthMonitor {
     private ActorRef master;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         logger.info("HEY");
-        master = system.actorOf(AKKA_SPRING_EXTENSION_PROVIDER.get(system).props("MasterHealthMonitor"), "MasterHealthMonitor");
+        master = system.actorOf(AkkaSpringExtentionProvider.get(system).props("masterHealthMonitor"), "MasterHealthMonitor");
 
-        FiniteDuration duration = FiniteDuration.create(1, TimeUnit.SECONDS);
+        FiniteDuration duration = FiniteDuration.create(30, TimeUnit.SECONDS);
         Timeout timeout = Timeout.durationToTimeout(duration);
 
         Future<Object> result = ask(master, new MasterHealthMonitor.Greet("John"), timeout);
         try {
             Object result1 = Await.result(result, duration);
-            logger.info("wow {}", result1);
+            logger.info("received: {}", result1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @PreDestroy
-    public void cleanUp(){
+    public void cleanUp() {
         system.terminate();
     }
 }
