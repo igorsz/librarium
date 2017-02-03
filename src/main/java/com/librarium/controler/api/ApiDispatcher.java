@@ -1,8 +1,8 @@
 package com.librarium.controler.api;
 
 import com.librarium.authentication.Authentication;
-import com.librarium.persistance.DocumentAlreadyExistsException;
-import com.librarium.persistance.DocumentNotExistsException;
+import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
+import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
 import com.librarium.search.Type;

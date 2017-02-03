@@ -1,11 +1,11 @@
 package com.librarium.controler;
 
 import com.librarium.controler.api.ApiDispatcher;
-import com.librarium.persistance.DocumentAlreadyExistsException;
-import com.librarium.persistance.DocumentNotExistsException;
+import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
+import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.search.FullDocumentPath;
 import com.librarium.search.Index;
-import com.librarium.search.IndexNameException;
+import com.librarium.search.exceptions.IndexNameException;
 import com.librarium.search.Type;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package com.librarium.search;
 
+import com.librarium.authentication.DummyAuthentication;
 import com.librarium.configuration.Configuration;
 import com.librarium.kafka.KafkaMsgProducer;
 import com.librarium.persistance.MongoDB;
@@ -13,7 +14,10 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.sniff.ElasticsearchHostsSniffer;
 import org.elasticsearch.client.sniff.HostsSniffer;
 import org.elasticsearch.client.sniff.Sniffer;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +44,9 @@ public class Elasticsearch {
 
     @Autowired
     KafkaMsgProducer kafkaMsgProducer;
+
+    @Autowired
+    DummyAuthentication authentication;
 
     @Autowired
     public Elasticsearch(Configuration configuration) {
@@ -107,10 +114,35 @@ public class Elasticsearch {
                     new Hashtable<String, String>(),
                     new StringEntity(query));
             String stringResponse = EntityUtils.toString(response.getEntity());
-            outputStream.write(stringResponse.getBytes());
+            String responseEntitlment = checkResponseEntitlment(stringResponse);
+            outputStream.write(responseEntitlment.getBytes());
         } catch (IOException e) {
             logger.error("Request error. Endpoint: {}, http method: {}",endpoint,httpMethod);
         }
+    }
+
+    private String checkResponseEntitlment(String stringResponse) {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonRespone;
+        JSONArray arrayToReturn = new JSONArray();
+        int counter = 0;
+        try {
+            jsonRespone = (JSONObject) parser.parse(stringResponse);
+            jsonRespone.remove("_shards");
+            JSONObject hitsWrapped = (JSONObject) jsonRespone.get("hits");
+            JSONArray hitsArray= (JSONArray) hitsWrapped.get("hits");
+            for (Object object : hitsArray){
+                JSONObject hit = (JSONObject) object;
+                FullDocumentPath path = new FullDocumentPath(hit.get("_index").toString(),hit.get("_type").toString(),hit.get("_id").toString());
+                if(authentication.authenticate(path)){
+                    arrayToReturn.add(counter,hit);
+                }
+            }
+            System.out.println("YR");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return arrayToReturn.toString();
     }
 
     private void executeESRequest(String httpMethod, String endpoint, OutputStream outputStream) {

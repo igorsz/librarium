@@ -1,8 +1,7 @@
 package com.librarium.search;
 
+import com.librarium.search.exceptions.IndexNameException;
 import lombok.Value;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Igor on 11.12.2016.

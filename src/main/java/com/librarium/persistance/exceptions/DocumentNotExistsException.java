@@ -1,4 +1,4 @@
-package com.librarium.persistance;
+package com.librarium.persistance.exceptions;
 
 import com.librarium.search.FullDocumentPath;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +14,7 @@ public class DocumentNotExistsException extends Exception {
 
     private static final Logger logger = LogManager.getLogger(DocumentNotExistsException.class);
 
-    DocumentNotExistsException(FullDocumentPath path) {
+    public DocumentNotExistsException(FullDocumentPath path) {
         logger.info("Document: {} doesn't exist", path);
     }
 }

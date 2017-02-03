@@ -1,4 +1,4 @@
-package com.librarium.persistance;
+package com.librarium.persistance.exceptions;
 
 import com.librarium.search.FullDocumentPath;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +14,7 @@ public class DocumentAlreadyExistsException extends Exception{
 
     private static final Logger logger = LogManager.getLogger(DocumentAlreadyExistsException.class);
 
-    DocumentAlreadyExistsException(FullDocumentPath path) {
+    public DocumentAlreadyExistsException(FullDocumentPath path) {
         logger.info("Document: {} already exists", path);
     }
 }

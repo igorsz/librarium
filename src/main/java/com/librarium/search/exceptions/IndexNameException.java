@@ -1,4 +1,4 @@
-package com.librarium.search;
+package com.librarium.search.exceptions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,7 @@ public class IndexNameException extends Exception {
 
     private static final Logger logger = LogManager.getLogger(IndexNameException.class);
 
-    IndexNameException(String index) {
+    public IndexNameException(String index) {
         logger.info("Index: {}, is not a valid index name", index);
     }
 }

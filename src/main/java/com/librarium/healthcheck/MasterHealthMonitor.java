@@ -30,7 +30,7 @@ public class MasterHealthMonitor extends UntypedActor {
         this.system = system;
         log.info("Created Master Health Monitor");
         kafkaMonitor = system.actorOf(AkkaSpringExtentionProvider.get(system).props("kafkaHealthMonitor"), "KafkaHealthMonitor");
-        system.scheduler().schedule(Duration.Zero(), Duration.create(2, TimeUnit.SECONDS), kafkaMonitor, "test", system.dispatcher(), null);
+//        system.scheduler().schedule(Duration.Zero(), Duration.create(2, TimeUnit.SECONDS), kafkaMonitor, "test", system.dispatcher(), null);
     }
 
     public void onReceive(Object message) throws Throwable {

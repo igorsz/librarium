@@ -1,5 +1,6 @@
 package com.librarium.authentication;
 
+import com.librarium.search.FullDocumentPath;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Component;
 public class DummyAuthentication implements Authentication{
 
     public boolean authenticate() {
+        return true;
+    }
+
+    public boolean authenticate(FullDocumentPath path) {
         return true;
     }
 }
