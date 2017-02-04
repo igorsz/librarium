@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LibrariumServiceApplication {
 
 	public static void main(String[] args) {
-//		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
 		SpringApplication.run(LibrariumServiceApplication.class, args);
 	}
 
