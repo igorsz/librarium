@@ -1,14 +1,14 @@
 package com.librarium.controler.api;
 
-import com.librarium.kafka.KafkaMsgProducer;
+import com.librarium.kafka.KafkaMessageProducer;
 import com.librarium.persistance.Cassandra;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.persistance.MongoDB;
 import com.librarium.search.Elasticsearch;
-import com.librarium.search.FullDocumentPath;
-import com.librarium.search.Index;
-import com.librarium.search.Type;
+import com.librarium.event.FullDocumentPath;
+import com.librarium.event.Index;
+import com.librarium.event.Type;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class DefaultApiStrategy implements ApiStrategy {
     Cassandra cassandra;
 
     @Autowired
-    KafkaMsgProducer kafka;
+    KafkaMessageProducer kafka;
 
     public void search(JSONObject search, OutputStream outputStream) {
         elasticsearch.search(search,outputStream);

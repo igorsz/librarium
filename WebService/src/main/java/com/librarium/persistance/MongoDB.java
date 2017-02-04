@@ -3,7 +3,7 @@ package com.librarium.persistance;
 import com.librarium.configuration.Configuration;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.search.FullDocumentPath;
+import com.librarium.event.FullDocumentPath;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;

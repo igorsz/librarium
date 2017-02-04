@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LibrariumServiceApplication {
+public class LibrariumWebServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LibrariumServiceApplication.class, args);
+		SpringApplication.run(LibrariumWebServiceApplication.class, args);
 	}
 
 }

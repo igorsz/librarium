@@ -1,9 +1,9 @@
 package com.librarium.controler;
 
 import com.librarium.controler.api.ApiDispatcher;
-import com.librarium.kafka.KafkaMsgProducer;
-import com.librarium.search.Index;
-import com.librarium.search.exceptions.IndexNameException;
+import com.librarium.kafka.KafkaMessageProducer;
+import com.librarium.event.Index;
+import com.librarium.event.exceptions.IndexNameException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +27,7 @@ public class ManagementController {
     ApiDispatcher dispatcher;
 
     @Autowired
-    KafkaMsgProducer kafkaMsgProducer;
+    KafkaMessageProducer kafkaMessageProducer;
 
     @PutMapping(value = "/{index}", produces = "application/json")
     public ResponseEntity<String> createIndex(@PathVariable String index,
@@ -39,7 +39,7 @@ public class ManagementController {
 
     @DeleteMapping(value = "/{index}", produces = "application/json")
     public ResponseEntity<String> deleteIndex(@PathVariable String index) throws IndexNameException {
-        kafkaMsgProducer.produceTest();
+        kafkaMessageProducer.produceTest();
         OutputStream outputStream = new ByteArrayOutputStream();
         dispatcher.deleteIndex(new Index(index),outputStream);
         return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);

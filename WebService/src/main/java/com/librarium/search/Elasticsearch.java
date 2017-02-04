@@ -2,8 +2,10 @@ package com.librarium.search;
 
 import com.librarium.authentication.DummyAuthentication;
 import com.librarium.configuration.Configuration;
-import com.librarium.kafka.KafkaMsgProducer;
-import com.librarium.persistance.MongoDB;
+import com.librarium.event.FullDocumentPath;
+import com.librarium.event.Index;
+import com.librarium.event.Type;
+import com.librarium.kafka.KafkaMessageProducer;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
@@ -43,7 +45,7 @@ public class Elasticsearch {
     private final String HTTP_DELETE = "DELETE";
 
     @Autowired
-    KafkaMsgProducer kafkaMsgProducer;
+    KafkaMessageProducer kafkaMessageProducer;
 
     @Autowired
     DummyAuthentication authentication;

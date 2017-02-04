@@ -1,4 +1,4 @@
-package com.librarium.search;
+package com.librarium.eventhandler.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

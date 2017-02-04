@@ -2,9 +2,9 @@ package com.librarium.controler.api;
 
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.search.FullDocumentPath;
-import com.librarium.search.Index;
-import com.librarium.search.Type;
+import com.librarium.event.FullDocumentPath;
+import com.librarium.event.Index;
+import com.librarium.event.Type;
 import org.json.simple.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 

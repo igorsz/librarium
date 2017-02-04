@@ -4,7 +4,7 @@ import com.datastax.driver.core.*;
 import com.librarium.configuration.Configuration;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.search.FullDocumentPath;
+import com.librarium.event.FullDocumentPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

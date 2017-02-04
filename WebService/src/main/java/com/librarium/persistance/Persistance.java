@@ -2,7 +2,7 @@ package com.librarium.persistance;
 
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.search.FullDocumentPath;
+import com.librarium.event.FullDocumentPath;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

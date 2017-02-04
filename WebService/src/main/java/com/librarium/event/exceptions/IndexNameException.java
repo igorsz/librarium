@@ -1,4 +1,4 @@
-package com.librarium.search.exceptions;
+package com.librarium.event.exceptions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

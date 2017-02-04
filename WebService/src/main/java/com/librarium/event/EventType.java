@@ -1,4 +1,4 @@
-package com.librarium.kafka;
+package com.librarium.event;
 
 /**
  * Created by Igor on 04.01.2017.

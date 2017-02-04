@@ -1,6 +1,5 @@
-package com.librarium.kafka;
+package com.librarium.event;
 
-import com.librarium.search.FullDocumentPath;
 import lombok.Value;
 
 /**

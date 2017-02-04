@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>WebService</module>
+        <module>EventHandler</module>
     </modules>
     <packaging>pom</packaging>
 </project>

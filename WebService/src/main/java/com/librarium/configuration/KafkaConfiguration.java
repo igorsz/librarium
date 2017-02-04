@@ -1,5 +1,6 @@
 package com.librarium.configuration;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @Component
 @PropertySource("application.properties")
+@Data
 public class KafkaConfiguration {
 
     @Value("#{${kafka.bootstrap_servers}}")
@@ -31,28 +33,4 @@ public class KafkaConfiguration {
 
     @Value("#{${kafka.value_serializer}}")
     String valueSerializer;
-
-    public String getAcks() {
-        return acks;
-    }
-
-    public int getRetries() {
-        return retries;
-    }
-
-    public String getBatchSize() {
-        return batchSize;
-    }
-
-    public String getKeySerializer() {
-        return keySerializer;
-    }
-
-    public String getValueSerializer() {
-        return valueSerializer;
-    }
-
-    public String getBootstrapServers() {
-        return bootstrapServers;
-    }
 }

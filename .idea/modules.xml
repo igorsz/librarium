@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/EventHandler/EventHandler.iml" filepath="$PROJECT_DIR$/EventHandler/EventHandler.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebService/WebService.iml" filepath="$PROJECT_DIR$/WebService/WebService.iml" />
       <module fileurl="file://$PROJECT_DIR$/librarium.iml" filepath="$PROJECT_DIR$/librarium.iml" />
     </modules>

@@ -1,5 +1,6 @@
 package com.librarium.configuration;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("application.properties")
+@Data
 public class CassandraConfiguration {
 
     @Value("#{${cassandra.host}}")
@@ -17,12 +19,4 @@ public class CassandraConfiguration {
 
     @Value("#{${cassandra.keyspace}}")
     String keySpace;
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getKeySpace() {
-        return keySpace;
-    }
 }
