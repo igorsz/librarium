@@ -15,4 +15,10 @@ public class Configuration {
 
     @Autowired
     KafkaConfiguration kafkaConfiguration;
+
+    @Autowired
+    TransformationConfiguration transformationConfiguration;
+
+    @Autowired
+    CassandraConfiguration cassandraConfiguration;
 }

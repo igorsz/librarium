@@ -1,6 +1,7 @@
 package com.librarium.configuration.akka;
 
 import akka.actor.ActorSystem;
+import com.librarium.persistance.Cassandra;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;

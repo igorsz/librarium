@@ -59,8 +59,8 @@ public class KafkaMessageProducer {
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath) {
-        Event event = new Event(EventType.MODIFY, fullDocumentPath, null, null);
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metada) {
+        Event event = new Event(EventType.MODIFY, fullDocumentPath, metada, null);
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));
     }
 }

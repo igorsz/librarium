@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Igor on 04.02.2017.
  */
-public interface Transformation {
+interface Transformation {
     Event transform(Event event);
     boolean transformationEligible(List<String> requestedTransformations);
 }

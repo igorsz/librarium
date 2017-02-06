@@ -69,7 +69,7 @@ public class DefaultApiStrategy implements ApiStrategy {
 
     public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
         cassandra.updateDocument(fullDocumentPath, metadata);
-        kafka.updateDocument(fullDocumentPath);
+        kafka.updateDocument(fullDocumentPath, metadata);
     }
 
     public void listIndices(OutputStream outputStream) {

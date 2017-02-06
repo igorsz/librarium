@@ -23,6 +23,10 @@ public class Cassandra implements Persistance{
     private Cluster cluster;
     private String APPLIED = "[applied]";
     private MongoDB mongoDB;
+    private PreparedStatement insertMetadataStatement;
+    private PreparedStatement insertContentStatement;
+    private PreparedStatement deleteStatement;
+    private PreparedStatement updateStataement;
 
     @Autowired
     public Cassandra(Configuration configuration, MongoDB mongoDB) {
@@ -35,42 +39,47 @@ public class Cassandra implements Persistance{
                 .addContactPoint(host)
                 .build();
         this.session = cluster.connect(keyspace);
+        prepareStatements();
+    }
+
+    private void prepareStatements() {
+        insertMetadataStatement = session.prepare(
+                "INSERT INTO metadata (key, metadata, transformation)" +
+                        "VALUES (?, ?, ?)");
+        insertContentStatement = session.prepare(
+                "INSERT INTO content (key, content)" +
+                        "VALUES (?, ?)");
+        deleteStatement = session.prepare(
+                "DELETE FROM metadata WHERE key=?");
+        updateStataement = session.prepare(
+                "UPDATE metadata SET metadata = ? WHERE key = ?");
     }
 
     public void persistDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
         if(!mongoDB.insertPrimaryKey(fullDocumentPath))
             throw new DocumentAlreadyExistsException(fullDocumentPath);
         persistDocumentContent(fullDocumentPath, file);
-        PreparedStatement statement = session.prepare(
-                "INSERT INTO metadata (key, metadata, transformation)" +
-                "VALUES (?, ?, ?)");
-        BoundStatement bind = statement.bind(fullDocumentPath.getFullPath(), metadata, transformations);
+
+        BoundStatement bind = insertMetadataStatement.bind(fullDocumentPath.getFullPath(), metadata, transformations);
         ResultSet resultSet = session.execute(bind);
     }
 
     private void persistDocumentContent(FullDocumentPath fullDocumentPath, MultipartFile file) throws IOException, DocumentAlreadyExistsException {
-        PreparedStatement statement = session.prepare(
-                "INSERT INTO content (key, content)" +
-                        "VALUES (?, ?)");
-        BoundStatement bind = statement.bind(fullDocumentPath.getFullPath(), new String(file.getBytes()));
+        BoundStatement bind = insertContentStatement.bind(fullDocumentPath.getFullPath(), new String(file.getBytes()));
         ResultSet resultSet = session.execute(bind);
     }
 
     public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
         if(!mongoDB.deletePrimaryKey(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
-        PreparedStatement statement = session.prepare(
-                "DELETE FROM metadata WHERE key=?");
-        BoundStatement bind = statement.bind(fullDocumentPath.getFullPath());
+        BoundStatement bind = deleteStatement.bind(fullDocumentPath.getFullPath());
         ResultSet resultSet = session.execute(bind);
     }
 
     public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
         if(!mongoDB.primaryKeyExists(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
-        PreparedStatement statement = session.prepare(
-                "UPDATE metadata SET metadata = ? WHERE key = ?");
-        BoundStatement bind = statement.bind(metadata, fullDocumentPath.getFullPath());
+        BoundStatement bind = updateStataement.bind(metadata, fullDocumentPath.getFullPath());
         ResultSet resultSet = session.execute(bind);
     }
 }
