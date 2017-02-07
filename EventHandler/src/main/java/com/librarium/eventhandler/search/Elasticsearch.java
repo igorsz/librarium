@@ -1,6 +1,5 @@
 package com.librarium.eventhandler.search;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.librarium.eventhandler.configuration.Configuration;
 import com.librarium.eventhandler.event.Event;
@@ -55,11 +54,11 @@ public class Elasticsearch {
     }
 
     public void upsertDocument(Event event) {
-        executeESRequest(HTTP_PUT, event.getFullDocumentPath().getFullPath(), event.getMetadata());
+        executeESRequest(HTTP_PUT, event.getFullDocumentPath().getFullPath(), event.getMetadata().toString());
     }
 
     public void deleteDocument(Event event) {
-        executeESRequest(HTTP_DELETE,event.getFullDocumentPath().getFullPath());
+        executeESRequest(HTTP_DELETE, event.getFullDocumentPath().getFullPath());
     }
 
     private void executeESRequest(String httpMethod, String endpoint) {
@@ -72,7 +71,7 @@ public class Elasticsearch {
             String stringResponse = EntityUtils.toString(response.getEntity());
             logger.info(stringResponse);
         } catch (IOException e) {
-            logger.error("Request error. Endpoint: {}, http method: {}, stack: {}",endpoint,httpMethod, e.getStackTrace());
+            logger.error("Request error. Endpoint: {}, http method: {}, stack: {}", endpoint, httpMethod, e.getStackTrace());
         }
     }
 

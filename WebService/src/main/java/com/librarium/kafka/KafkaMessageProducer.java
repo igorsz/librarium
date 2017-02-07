@@ -1,6 +1,7 @@
 package com.librarium.kafka;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.librarium.configuration.Configuration;
 import com.librarium.event.Event;
 import com.librarium.event.EventType;
@@ -49,7 +50,7 @@ public class KafkaMessageProducer {
 //        producer.close();
     }
 
-    public void createDocument(FullDocumentPath fullDocumentPath, String metadata, String transformations) {
+    public void createDocument(FullDocumentPath fullDocumentPath, JsonObject metadata, JsonObject transformations) {
         Event event = new Event(EventType.CREATE, fullDocumentPath, metadata, transformations);
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));
     }
@@ -59,7 +60,7 @@ public class KafkaMessageProducer {
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath, String metada) {
+    public void updateDocument(FullDocumentPath fullDocumentPath, JsonObject metada) {
         Event event = new Event(EventType.MODIFY, fullDocumentPath, metada, null);
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));
     }

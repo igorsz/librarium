@@ -1,5 +1,8 @@
 package com.librarium.controler.api;
 
+import com.google.gson.JsonObject;
+import com.librarium.event.StringToJsonMapper;
+import com.librarium.event.exceptions.StringToJsonMappingException;
 import com.librarium.kafka.KafkaMessageProducer;
 import com.librarium.persistance.Cassandra;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
@@ -37,6 +40,9 @@ public class DefaultApiStrategy implements ApiStrategy {
     @Autowired
     KafkaMessageProducer kafka;
 
+    @Autowired
+    StringToJsonMapper stringToJsonMapper;
+
     public void search(JSONObject search, OutputStream outputStream) {
         elasticsearch.search(search,outputStream);
     }
@@ -57,9 +63,11 @@ public class DefaultApiStrategy implements ApiStrategy {
         elasticsearch.deleteIndex(index, outputStream);
     }
 
-    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
+    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException, StringToJsonMappingException {
+        JsonObject metadataJson = stringToJsonMapper.getJsonFromString(metadata);
+        JsonObject transformationsJson = stringToJsonMapper.getJsonFromString(transformations);
         cassandra.persistDocument(fullDocumentPath, file, metadata, transformations);
-        kafka.createDocument(fullDocumentPath,metadata,transformations);
+        kafka.createDocument(fullDocumentPath,metadataJson,transformationsJson);
     }
 
     public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
@@ -67,12 +75,17 @@ public class DefaultApiStrategy implements ApiStrategy {
         kafka.deleteDocument(fullDocumentPath);
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException, StringToJsonMappingException {
+        JsonObject metadataJson = stringToJsonMapper.getJsonFromString(metadata);
         cassandra.updateDocument(fullDocumentPath, metadata);
-        kafka.updateDocument(fullDocumentPath, metadata);
+        kafka.updateDocument(fullDocumentPath, metadataJson);
     }
 
     public void listIndices(OutputStream outputStream) {
         elasticsearch.listIndices(outputStream);
+    }
+
+    public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {
+        cassandra.getDocument(fullDocumentPath, outputStream);
     }
 }

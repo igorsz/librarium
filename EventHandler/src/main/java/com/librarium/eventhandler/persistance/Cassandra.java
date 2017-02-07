@@ -33,7 +33,7 @@ public class Cassandra {
     public void updateMetadata(Event event) {
         PreparedStatement statement = session.prepare(
                 "UPDATE metadata SET metadata = ? WHERE key = ?");
-        BoundStatement bind = statement.bind(event.getMetadata(), event.getFullDocumentPath().getFullPath());
+        BoundStatement bind = statement.bind(event.getMetadata().toString(), event.getFullDocumentPath().getFullPath());
         session.execute(bind);
     }
 }

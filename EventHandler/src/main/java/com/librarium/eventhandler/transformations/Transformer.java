@@ -67,8 +67,7 @@ public class Transformer {
     }
 
     private ArrayList prepareRequestedTransformationsMap(Event event) {
-        JsonObject jo = (JsonObject) parser.parse(event.getTransformations());
-        JsonArray elements = jo.getAsJsonArray("transformations");
+        JsonArray elements = event.getTransformations().getAsJsonArray("transformations");
         return new Gson().fromJson(elements, ArrayList.class);
     }
 

@@ -18,13 +18,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by Igor on 04.01.2017.
  */
 
 @Component
-public class MongoDB implements Persistance{
+public class MongoDB {
 
     @Autowired
     Configuration configuration;

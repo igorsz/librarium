@@ -26,12 +26,9 @@ public class DummyTransformation implements Transformation {
     }
 
     public Event transform(Event event) {
-        String metadata = event.getMetadata();
-        JsonParser parser = new JsonParser();
-        JsonObject parsed = (JsonObject)parser.parse(metadata);
-        parsed.addProperty("modified",true);
-        String modifiedMetadata = parsed.toString();
-        Event changedEvent = new Event(event.getEventType(),event.getFullDocumentPath(),modifiedMetadata,event.getTransformations());
+        JsonObject metadata = event.getMetadata();
+        metadata.addProperty("modified",true);
+        Event changedEvent = new Event(event.getEventType(),event.getFullDocumentPath(),metadata,event.getTransformations());
         return changedEvent;
     }
 

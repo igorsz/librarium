@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by Igor on 01.02.2017.
@@ -27,6 +28,8 @@ public class Cassandra implements Persistance{
     private PreparedStatement insertContentStatement;
     private PreparedStatement deleteStatement;
     private PreparedStatement updateStataement;
+    private PreparedStatement getContentStatement;
+    private PreparedStatement getMetadataStatement;
 
     @Autowired
     public Cassandra(Configuration configuration, MongoDB mongoDB) {
@@ -53,6 +56,8 @@ public class Cassandra implements Persistance{
                 "DELETE FROM metadata WHERE key=?");
         updateStataement = session.prepare(
                 "UPDATE metadata SET metadata = ? WHERE key = ?");
+        getContentStatement = session.prepare(
+                "SELECT content FROM content WHERE key = ?");
     }
 
     public void persistDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
@@ -81,5 +86,13 @@ public class Cassandra implements Persistance{
             throw new DocumentNotExistsException(fullDocumentPath);
         BoundStatement bind = updateStataement.bind(metadata, fullDocumentPath.getFullPath());
         ResultSet resultSet = session.execute(bind);
+    }
+
+    public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {
+        if(!mongoDB.primaryKeyExists(fullDocumentPath))
+            throw new DocumentNotExistsException(fullDocumentPath);
+        BoundStatement bind = getContentStatement.bind(fullDocumentPath.getFullPath());
+        ResultSet execute = session.execute(bind);
+        outputStream.write(execute.one().get(0,String.class).getBytes());
     }
 }

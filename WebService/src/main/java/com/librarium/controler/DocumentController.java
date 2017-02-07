@@ -1,6 +1,7 @@
 package com.librarium.controler;
 
 import com.librarium.controler.api.ApiDispatcher;
+import com.librarium.event.exceptions.StringToJsonMappingException;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
@@ -70,7 +71,7 @@ public class DocumentController {
                                               @PathVariable String documentId,
                                               @RequestParam MultipartFile file,
                                               @RequestParam(required = false) Map<String,String> params)
-            throws IOException, DocumentAlreadyExistsException {
+            throws IOException, DocumentAlreadyExistsException, StringToJsonMappingException {
         String metadata = params.get("metadata");
         String transformations = params.get("transformations");
         if (!file.isEmpty()) {
@@ -95,10 +96,21 @@ public class DocumentController {
                                                  @PathVariable String type,
                                                  @PathVariable String documentId,
                                                  @RequestParam(required = false) Map<String,String> params)
-            throws DocumentNotExistsException {
+            throws DocumentNotExistsException, StringToJsonMappingException {
         String metadata = params.get("metadata");
         apiDispatcher.updateDocument(new FullDocumentPath(index, type, documentId), metadata);
         return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{index}/{type}/{documentId}", produces = "text/plain")
+    public ResponseEntity<String> getDocument(@PathVariable String index,
+                                              @PathVariable String type,
+                                              @PathVariable String documentId)
+            throws IOException, DocumentNotExistsException {
+        OutputStream outputStream = new ByteArrayOutputStream();
+        apiDispatcher.getDocument(new FullDocumentPath(index,type,documentId), outputStream);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
+
     }
 
     private List<Type> prepareTypesList(List<String> types) {

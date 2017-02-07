@@ -1,5 +1,6 @@
 package com.librarium.eventhandler.event;
 
+import com.google.gson.JsonObject;
 import lombok.Value;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Value;
 public class Event {
     EventType eventType;
     FullDocumentPath fullDocumentPath;
-    String metadata;
-    String transformations;
+    JsonObject metadata;
+    JsonObject transformations;
 
 }

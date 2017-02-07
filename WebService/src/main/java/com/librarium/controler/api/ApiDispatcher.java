@@ -1,6 +1,7 @@
 package com.librarium.controler.api;
 
 import com.librarium.authentication.Authentication;
+import com.librarium.event.exceptions.StringToJsonMappingException;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
@@ -58,7 +59,7 @@ public class ApiDispatcher {
         getApiStrategy().createIndex(index, outputStream);
     }
 
-    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException {
+    public void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException, StringToJsonMappingException {
         authentication.authenticate();
         getApiStrategy().putDocument(fullDocumentPath, file, metadata, transformations);
     }
@@ -68,7 +69,7 @@ public class ApiDispatcher {
         getApiStrategy().deleteDocument(fullDocumentPath);
     }
 
-    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
+    public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException, StringToJsonMappingException {
         authentication.authenticate();
         getApiStrategy().updateDocument(fullDocumentPath, metadata);
     }
@@ -76,5 +77,10 @@ public class ApiDispatcher {
     public void listIndices(OutputStream outputStream) {
         authentication.authenticate();
         getApiStrategy().listIndices(outputStream);
+    }
+
+    public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {
+        authentication.authenticate();
+        getApiStrategy().getDocument(fullDocumentPath, outputStream);
     }
 }

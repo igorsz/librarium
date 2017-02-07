@@ -1,5 +1,6 @@
 package com.librarium.controler.api;
 
+import com.librarium.event.exceptions.StringToJsonMappingException;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
@@ -26,11 +27,13 @@ public interface ApiStrategy {
 
     void createIndex(Index index, OutputStream outputStream);
 
-    void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException;
+    void putDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations) throws IOException, DocumentAlreadyExistsException, StringToJsonMappingException;
 
     void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException;
 
-    void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException;
+    void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException, StringToJsonMappingException;
 
     void listIndices(OutputStream outputStream);
+
+    void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException;
 }
