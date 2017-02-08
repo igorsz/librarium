@@ -1,6 +1,8 @@
 package com.librarium.persistance;
 
 import com.librarium.configuration.Configuration;
+import com.librarium.healthcheck.HealthCheck;
+import com.librarium.healthcheck.messages.HealthStatus;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
@@ -12,6 +14,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +29,9 @@ import java.io.OutputStream;
  */
 
 @Component
-public class MongoDB {
+public class MongoDB implements HealthCheck{
+
+    private static final Logger logger = LogManager.getLogger(MongoDB.class);
 
     @Autowired
     Configuration configuration;
@@ -88,6 +94,16 @@ public class MongoDB {
                 new BasicDBObject("$set", new BasicDBObject("metadata", metadata)));
         if (updateResult.getMatchedCount() != 1){
             throw new DocumentNotExistsException(fullDocumentPath);
+        }
+    }
+
+    public HealthStatus performHealthCheck() {
+        try{
+            String name = database.getName();
+            return HealthStatus.GREEN;
+        } catch (Exception e){
+            logger.error("Mongo health status returned RED");
+            return HealthStatus.RED;
         }
     }
 }

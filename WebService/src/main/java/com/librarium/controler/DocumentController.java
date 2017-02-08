@@ -36,8 +36,6 @@ public class DocumentController {
     @Autowired
     ApiDispatcher apiDispatcher;
 
-    private static final String template = "Hello, %s!";
-
     @PostMapping(value = "/_search", produces = "application/json")
     public ResponseEntity<String> search(@RequestBody JSONObject search, HttpServletResponse response) {
         OutputStream outputStream = new ByteArrayOutputStream();

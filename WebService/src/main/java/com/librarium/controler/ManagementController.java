@@ -51,6 +51,13 @@ public class ManagementController {
         return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/_health", produces = "text/plain")
+    public ResponseEntity<String> getHealthStatus(){
+        OutputStream outputStream = new ByteArrayOutputStream();
+        dispatcher.getHealthStatus(outputStream);
+        return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
+    }
+
 
     private HttpHeaders getJsonHttpHeader(){
         HttpHeaders httpHeaders = new HttpHeaders();

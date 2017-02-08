@@ -3,6 +3,7 @@ package com.librarium.controler.api;
 import com.google.gson.JsonObject;
 import com.librarium.event.StringToJsonMapper;
 import com.librarium.event.exceptions.StringToJsonMappingException;
+import com.librarium.healthcheck.ApplicationHealthMonitorSystem;
 import com.librarium.kafka.KafkaMessageProducer;
 import com.librarium.persistance.Cassandra;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
@@ -42,6 +43,9 @@ public class DefaultApiStrategy implements ApiStrategy {
 
     @Autowired
     StringToJsonMapper stringToJsonMapper;
+
+    @Autowired
+    ApplicationHealthMonitorSystem applicationHealthMonitorSystem;
 
     public void search(JSONObject search, OutputStream outputStream) {
         elasticsearch.search(search,outputStream);
@@ -87,5 +91,9 @@ public class DefaultApiStrategy implements ApiStrategy {
 
     public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {
         cassandra.getDocument(fullDocumentPath, outputStream);
+    }
+
+    public void getHealthStatus(OutputStream outputStream) {
+        applicationHealthMonitorSystem.getApplicationHealthStatus(outputStream);
     }
 }

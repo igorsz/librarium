@@ -13,15 +13,18 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
  * Created by Igor on 04.02.2017.
  */
 @Component
-public class KafkaMessageConsumer {
+public class KafkaMessageConsumer implements ApplicationRunner{
 
     private Transformer transformer;
     private Configuration configuration;
@@ -39,7 +42,11 @@ public class KafkaMessageConsumer {
         Properties properties = prepareKafkaProperties(configuration);
         this.consumer = new KafkaConsumer<String, String>(properties);
         this.consumer.subscribe(Arrays.asList(topicName));
-        consumeEvent();
+    }
+
+    @PostConstruct
+    public void init() throws NotRecognizedEventTypeException {
+//        consumeEvent();
     }
 
     private Properties prepareKafkaProperties(Configuration configuration) {
@@ -73,5 +80,9 @@ public class KafkaMessageConsumer {
     private Event deserializeEvent(String serialized) {
         Event event = gson.fromJson(serialized, Event.class);
         return event;
+    }
+
+    public void run(ApplicationArguments applicationArguments) throws Exception {
+        consumeEvent();
     }
 }

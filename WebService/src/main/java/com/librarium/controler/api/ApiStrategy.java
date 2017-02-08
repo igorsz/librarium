@@ -36,4 +36,6 @@ public interface ApiStrategy {
     void listIndices(OutputStream outputStream);
 
     void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException;
+
+    void getHealthStatus(OutputStream outputStream);
 }

@@ -2,7 +2,6 @@ package com.librarium.eventhandler.transformations;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.librarium.eventhandler.configuration.Configuration;
 import com.librarium.eventhandler.event.Event;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class Transformer {
 
     private Configuration configuration;
-    private Map<String,Transformation> transformationMap;
+    private Map<String, Transformation> transformationMap;
     private JsonParser parser;
     private Cassandra cassandra;
 
@@ -37,9 +36,9 @@ public class Transformer {
     }
 
     private void createTransformationClasses(Map<String, String> transformationClasses) throws FailedToCreateTransformationClassException {
-        for (Map.Entry entry : transformationClasses.entrySet()){
+        for (Map.Entry entry : transformationClasses.entrySet()) {
             try {
-                Class.forName(String.valueOf(entry.getValue())).getConstructor(String.class,Transformer.class).newInstance(entry.getKey(),this);
+                Class.forName(String.valueOf(entry.getValue())).getConstructor(String.class, Transformer.class).newInstance(entry.getKey(), this);
             } catch (Exception e) {
                 throw new FailedToCreateTransformationClassException(e);
             }
@@ -47,7 +46,7 @@ public class Transformer {
     }
 
     void subscribe(String key, Transformation transformationClass) {
-        transformationMap.put(key,transformationClass);
+        transformationMap.put(key, transformationClass);
     }
 
     public Event performTransformations(Event event) {
@@ -56,7 +55,7 @@ public class Transformer {
         for (Object requestedTransformation : requestedTransformations) {
             String req = (String) requestedTransformation;
             Transformation transformation = transformationMap.get(req);
-            if (transformation==null){
+            if (transformation == null) {
                 handleWrongTransformationName();
             } else {
                 transformedEvent = transformation.transform(transformedEvent);

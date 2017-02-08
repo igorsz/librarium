@@ -1,5 +1,6 @@
 package com.librarium.persistance;
 
+import com.librarium.healthcheck.messages.HealthStatus;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
@@ -16,5 +17,5 @@ public interface Persistance {
     void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException;
     void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException;
     void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException;
-    String performHealthCheck();
+    HealthStatus performHealthCheck();
 }

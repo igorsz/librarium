@@ -2,9 +2,13 @@ package com.librarium.persistance;
 
 import com.datastax.driver.core.*;
 import com.librarium.configuration.Configuration;
+import com.librarium.healthcheck.HealthCheck;
+import com.librarium.healthcheck.messages.HealthStatus;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
 import com.librarium.event.FullDocumentPath;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +21,10 @@ import java.io.OutputStream;
  */
 
 @Component
-public class Cassandra implements Persistance{
+public class Cassandra implements Persistance, HealthCheck{
+
+    private static final Logger logger = LogManager.getLogger(Cassandra.class);
+
 
     private Configuration configuration;
     private Session session;
@@ -87,9 +94,14 @@ public class Cassandra implements Persistance{
         session.execute(bind);
     }
 
-    public String performHealthCheck() {
-        Row row = session.execute("select cluster_name, release_version from system.local").one();
-        return "green";
+    public HealthStatus performHealthCheck() {
+        try {
+            session.execute("select cluster_name, release_version from system.local").one();
+            return HealthStatus.GREEN;
+        } catch (Exception e){
+            logger.error("Cassandra health status returned RED");
+            return HealthStatus.RED;
+        }
     }
 
     public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {

@@ -83,4 +83,9 @@ public class ApiDispatcher {
         authentication.authenticate();
         getApiStrategy().getDocument(fullDocumentPath, outputStream);
     }
+
+    public void getHealthStatus(OutputStream outputStream) {
+        authentication.authenticate();
+        getApiStrategy().getHealthStatus(outputStream);
+    }
 }
