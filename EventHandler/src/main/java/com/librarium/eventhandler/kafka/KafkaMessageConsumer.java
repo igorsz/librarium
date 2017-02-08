@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.librarium.eventhandler.configuration.Configuration;
 import com.librarium.eventhandler.event.Event;
 import com.librarium.eventhandler.event.EventType;
-import com.librarium.eventhandler.search.Elasticsearch;
 import com.librarium.eventhandler.search.ElasticsearchEventDispatcher;
 import com.librarium.eventhandler.search.exceptions.NotRecognizedEventTypeException;
 import com.librarium.eventhandler.transformations.Transformer;
@@ -16,9 +15,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by Igor on 04.02.2017.

@@ -43,7 +43,7 @@ public class SystemHealthMonitor {
         FiniteDuration duration = FiniteDuration.create(30, TimeUnit.SECONDS);
         Timeout timeout = Timeout.durationToTimeout(duration);
 
-        Future<Object> result = ask(master, new MasterHealthMonitor.Greet("John"), timeout);
+        Future<Object> result = ask(master, new String("John"), timeout);
         try {
             Object result1 = Await.result(result, duration);
             logger.info("received: {}", result1);

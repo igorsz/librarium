@@ -29,7 +29,6 @@ public class Cassandra implements Persistance{
     private PreparedStatement deleteStatement;
     private PreparedStatement updateStataement;
     private PreparedStatement getContentStatement;
-    private PreparedStatement getMetadataStatement;
 
     @Autowired
     public Cassandra(Configuration configuration, MongoDB mongoDB) {
@@ -66,26 +65,31 @@ public class Cassandra implements Persistance{
         persistDocumentContent(fullDocumentPath, file);
 
         BoundStatement bind = insertMetadataStatement.bind(fullDocumentPath.getFullPath(), metadata, transformations);
-        ResultSet resultSet = session.execute(bind);
+        session.execute(bind);
     }
 
     private void persistDocumentContent(FullDocumentPath fullDocumentPath, MultipartFile file) throws IOException, DocumentAlreadyExistsException {
         BoundStatement bind = insertContentStatement.bind(fullDocumentPath.getFullPath(), new String(file.getBytes()));
-        ResultSet resultSet = session.execute(bind);
+        session.execute(bind);
     }
 
     public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
         if(!mongoDB.deletePrimaryKey(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
         BoundStatement bind = deleteStatement.bind(fullDocumentPath.getFullPath());
-        ResultSet resultSet = session.execute(bind);
+        session.execute(bind);
     }
 
     public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
         if(!mongoDB.primaryKeyExists(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
         BoundStatement bind = updateStataement.bind(metadata, fullDocumentPath.getFullPath());
-        ResultSet resultSet = session.execute(bind);
+        session.execute(bind);
+    }
+
+    public String performHealthCheck() {
+        Row row = session.execute("select cluster_name, release_version from system.local").one();
+        return "green";
     }
 
     public void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException {

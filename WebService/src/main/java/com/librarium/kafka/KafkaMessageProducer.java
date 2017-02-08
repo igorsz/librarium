@@ -40,16 +40,6 @@ public class KafkaMessageProducer {
         this.gson = new Gson();
     }
 
-    public void produceTest() {
-
-//        for (int i = 0; i < 10; i++) {
-//            producer.send(new ProducerRecord<String, String>(topicName,
-//                    Integer.toString(i), "yo, testujemy producenta: " + Integer.toString(i)));
-//            System.out.println("Message sent successfully");
-//        }
-//        producer.close();
-    }
-
     public void createDocument(FullDocumentPath fullDocumentPath, JsonObject metadata, JsonObject transformations) {
         Event event = new Event(EventType.CREATE, fullDocumentPath, metadata, transformations);
         producer.send(new ProducerRecord<String, String>(topicName, gson.toJson(event)));

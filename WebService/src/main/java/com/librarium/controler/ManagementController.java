@@ -39,7 +39,6 @@ public class ManagementController {
 
     @DeleteMapping(value = "/{index}", produces = "application/json")
     public ResponseEntity<String> deleteIndex(@PathVariable String index) throws IndexNameException {
-        kafkaMessageProducer.produceTest();
         OutputStream outputStream = new ByteArrayOutputStream();
         dispatcher.deleteIndex(new Index(index),outputStream);
         return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);

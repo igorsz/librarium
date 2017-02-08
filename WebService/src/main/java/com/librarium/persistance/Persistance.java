@@ -16,4 +16,5 @@ public interface Persistance {
     void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException;
     void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException;
     void getDocument(FullDocumentPath fullDocumentPath, OutputStream outputStream) throws DocumentNotExistsException, IOException;
+    String performHealthCheck();
 }

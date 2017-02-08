@@ -24,37 +24,24 @@ public class MasterHealthMonitor extends UntypedActor {
     private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
     private ActorSystem system;
-    private ActorRef kafkaMonitor;
+    private ActorRef cassandra;
 
     public MasterHealthMonitor(ActorSystem system) {
         this.system = system;
         log.info("Created Master Health Monitor");
-        kafkaMonitor = system.actorOf(AkkaSpringExtentionProvider.get(system).props("kafkaHealthMonitor"), "KafkaHealthMonitor");
-//        system.scheduler().schedule(Duration.Zero(), Duration.create(2, TimeUnit.SECONDS), kafkaMonitor, "test", system.dispatcher(), null);
+        cassandra = system.actorOf(AkkaSpringExtentionProvider.get(system).props("cassandraHealthMonitor"), "CassandraHealthMonitor");
+        system.scheduler().schedule(Duration.Zero(), Duration.create(5, TimeUnit.SECONDS), cassandra, new HealthCheckRequest(), system.dispatcher(), getSelf());
     }
 
     public void onReceive(Object message) throws Throwable {
         log.info(String.valueOf(system));
-        if (message instanceof Greet) {
+        if (message instanceof Object) {
 //            log.info("Received String message: {}", message);
             getSender().tell("success arrived", getSelf());
         } else
             unhandled(message);
     }
 
-    public static class Greet {
-        private String name;
 
-        public Greet(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
+    public class HealthCheckRequest { }
 }

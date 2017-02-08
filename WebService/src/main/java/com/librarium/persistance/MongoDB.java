@@ -44,9 +44,7 @@ public class MongoDB {
     boolean primaryKeyExists(FullDocumentPath path){
         FindIterable<BasicDBObject> key = primaryKeysCollection.find(new Document("key_id", path.getFullPath()));
         BasicDBObject first = key.first();
-        if (first==null)
-            return false;
-        return true;
+        return first != null;
     }
 
     boolean insertPrimaryKey(FullDocumentPath path){
@@ -62,9 +60,7 @@ public class MongoDB {
     boolean deletePrimaryKey(FullDocumentPath path){
         BasicDBObject key = new BasicDBObject("key_id", path.getFullPath());
         DeleteResult deleteResult = primaryKeysCollection.deleteOne(key);
-        if(deleteResult.getDeletedCount()==0)
-            return false;
-        return true;
+        return deleteResult.getDeletedCount() != 0;
     }
 
     public void persistDocument(FullDocumentPath fullDocumentPath, MultipartFile file, String metadata, String transformations)
