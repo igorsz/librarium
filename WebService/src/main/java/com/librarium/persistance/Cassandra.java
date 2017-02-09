@@ -72,26 +72,30 @@ public class Cassandra implements Persistance, HealthCheck{
         persistDocumentContent(fullDocumentPath, file);
 
         BoundStatement bind = insertMetadataStatement.bind(fullDocumentPath.getFullPath(), metadata, transformations);
+        executeBind(bind);
+    }
+
+    private void executeBind(BoundStatement bind) {
         session.execute(bind);
     }
 
     private void persistDocumentContent(FullDocumentPath fullDocumentPath, MultipartFile file) throws IOException, DocumentAlreadyExistsException {
         BoundStatement bind = insertContentStatement.bind(fullDocumentPath.getFullPath(), new String(file.getBytes()));
-        session.execute(bind);
+        executeBind(bind);
     }
 
     public void deleteDocument(FullDocumentPath fullDocumentPath) throws DocumentNotExistsException {
         if(!mongoDB.deletePrimaryKey(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
         BoundStatement bind = deleteStatement.bind(fullDocumentPath.getFullPath());
-        session.execute(bind);
+        executeBind(bind);
     }
 
     public void updateDocument(FullDocumentPath fullDocumentPath, String metadata) throws DocumentNotExistsException {
         if(!mongoDB.primaryKeyExists(fullDocumentPath))
             throw new DocumentNotExistsException(fullDocumentPath);
         BoundStatement bind = updateStataement.bind(metadata, fullDocumentPath.getFullPath());
-        session.execute(bind);
+        executeBind(bind);
     }
 
     public HealthStatus performHealthCheck() {
