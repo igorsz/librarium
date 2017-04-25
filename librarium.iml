@@ -17,6 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/WebService/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/WebService/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/WebService/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

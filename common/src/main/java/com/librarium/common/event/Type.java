@@ -1,4 +1,4 @@
-package com.librarium.eventhandler.event;
+package com.librarium.common.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

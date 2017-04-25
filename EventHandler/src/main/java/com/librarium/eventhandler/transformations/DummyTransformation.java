@@ -1,10 +1,7 @@
 package com.librarium.eventhandler.transformations;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.librarium.eventhandler.event.Event;
+import com.librarium.common.event.Event;
 import com.librarium.eventhandler.transformations.exceptions.NotMatchingTransformationNameException;
 
 import java.util.List;

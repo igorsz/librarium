@@ -1,11 +1,11 @@
-package com.librarium.event;
+package com.librarium.common.event;
 
 import com.google.gson.JsonObject;
-import com.librarium.event.exceptions.StringToJsonMappingException;
+import com.librarium.common.event.exceptions.StringToJsonMappingException;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Created by Igor on 07.02.2017.
@@ -27,7 +27,7 @@ public class StringToJsonMapperTest {
     @Test
     public void getCorrectJsonFromString() throws StringToJsonMappingException {
         JsonObject jsonFromString = stringToJsonMapper.getJsonFromString(CORRECT_STRING_VALUE);
-        assertTrue(jsonFromString.equals(expectedJson));
+        TestCase.assertTrue(jsonFromString.equals(expectedJson));
     }
 
     @Test(expected = StringToJsonMappingException.class)

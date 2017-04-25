@@ -1,9 +1,8 @@
-package com.librarium.event;
+package com.librarium.common.event;
 
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.librarium.event.exceptions.StringToJsonMappingException;
+import com.librarium.common.event.exceptions.StringToJsonMappingException;
 import org.springframework.stereotype.Component;
 
 /**

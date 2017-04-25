@@ -1,6 +1,6 @@
 package com.librarium.authentication;
 
-import com.librarium.event.FullDocumentPath;
+import com.librarium.common.event.FullDocumentPath;
 import org.springframework.stereotype.Component;
 
 /**

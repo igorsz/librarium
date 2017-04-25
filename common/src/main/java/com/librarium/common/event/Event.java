@@ -1,4 +1,4 @@
-package com.librarium.eventhandler.event;
+package com.librarium.common.event;
 
 import com.google.gson.JsonObject;
 import lombok.Value;
@@ -13,5 +13,4 @@ public class Event {
     FullDocumentPath fullDocumentPath;
     JsonObject metadata;
     JsonObject transformations;
-
 }

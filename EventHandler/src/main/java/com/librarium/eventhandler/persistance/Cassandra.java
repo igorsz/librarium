@@ -1,10 +1,12 @@
 package com.librarium.eventhandler.persistance;
 
 import com.datastax.driver.core.*;
+import com.librarium.common.event.Event;
 import com.librarium.eventhandler.configuration.Configuration;
-import com.librarium.eventhandler.event.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PreDestroy;
 
 /**
  * Created by Igor on 01.02.2017.
@@ -16,7 +18,6 @@ public class Cassandra {
     private Configuration configuration;
     private Session session;
     private Cluster cluster;
-    private String APPLIED = "[applied]";
 
     @Autowired
     public Cassandra(Configuration configuration) {
@@ -28,6 +29,11 @@ public class Cassandra {
                 .addContactPoint(host)
                 .build();
         this.session = cluster.connect(keyspace);
+    }
+
+    @PreDestroy
+    public void cleanUp() {
+        cluster.close();
     }
 
     public void updateMetadata(Event event) {

@@ -1,6 +1,6 @@
-package com.librarium.event;
+package com.librarium.common.event;
 
-import com.librarium.event.exceptions.IndexNameException;
+import com.librarium.common.event.exceptions.IndexNameException;
 import org.junit.Test;
 
 /**

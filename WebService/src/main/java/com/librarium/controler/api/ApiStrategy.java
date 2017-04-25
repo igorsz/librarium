@@ -1,11 +1,11 @@
 package com.librarium.controler.api;
 
-import com.librarium.event.exceptions.StringToJsonMappingException;
+import com.librarium.common.event.FullDocumentPath;
+import com.librarium.common.event.Index;
+import com.librarium.common.event.Type;
+import com.librarium.common.event.exceptions.StringToJsonMappingException;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.event.FullDocumentPath;
-import com.librarium.event.Index;
-import com.librarium.event.Type;
 import org.json.simple.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 

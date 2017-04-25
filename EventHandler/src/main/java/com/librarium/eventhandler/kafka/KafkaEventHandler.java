@@ -1,9 +1,10 @@
 package com.librarium.eventhandler.kafka;
 
 import com.google.gson.Gson;
+import com.librarium.common.configuration.TestConf;
+import com.librarium.common.event.Event;
+import com.librarium.common.event.EventType;
 import com.librarium.eventhandler.configuration.Configuration;
-import com.librarium.eventhandler.event.Event;
-import com.librarium.eventhandler.event.EventType;
 import com.librarium.eventhandler.search.ElasticsearchEventDispatcher;
 import com.librarium.eventhandler.search.exceptions.NotRecognizedEventTypeException;
 import com.librarium.eventhandler.transformations.Transformer;
@@ -17,14 +18,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
  * Created by Igor on 04.02.2017.
  */
 @Component
-public class KafkaMessageConsumer implements ApplicationRunner{
+public class KafkaEventHandler implements ApplicationRunner{
 
     private Transformer transformer;
     private Configuration configuration;
@@ -33,8 +33,9 @@ public class KafkaMessageConsumer implements ApplicationRunner{
     private String topicName = "test";
     private Gson gson;
 
+
     @Autowired
-    public KafkaMessageConsumer(Configuration configuration, Transformer transformer, ElasticsearchEventDispatcher elasticsearchEventDispatcher) throws NotRecognizedEventTypeException {
+    public KafkaEventHandler(Configuration configuration, Transformer transformer, ElasticsearchEventDispatcher elasticsearchEventDispatcher) throws NotRecognizedEventTypeException {
         this.configuration = configuration;
         this.transformer = transformer;
         this.elasticsearchEventDispatcher = elasticsearchEventDispatcher;
@@ -42,11 +43,6 @@ public class KafkaMessageConsumer implements ApplicationRunner{
         Properties properties = prepareKafkaProperties(configuration);
         this.consumer = new KafkaConsumer<String, String>(properties);
         this.consumer.subscribe(Arrays.asList(topicName));
-    }
-
-    @PostConstruct
-    public void init() throws NotRecognizedEventTypeException {
-//        consumeEvent();
     }
 
     private Properties prepareKafkaProperties(Configuration configuration) {
@@ -59,7 +55,7 @@ public class KafkaMessageConsumer implements ApplicationRunner{
         return properties;
     }
 
-    private void consumeEvent() throws NotRecognizedEventTypeException {
+    private void consumeAndHandleEvent() throws NotRecognizedEventTypeException {
         try {
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(1000);
@@ -78,11 +74,10 @@ public class KafkaMessageConsumer implements ApplicationRunner{
     }
 
     private Event deserializeEvent(String serialized) {
-        Event event = gson.fromJson(serialized, Event.class);
-        return event;
+        return gson.fromJson(serialized, Event.class);
     }
 
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        consumeEvent();
+        consumeAndHandleEvent();
     }
 }

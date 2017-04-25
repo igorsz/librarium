@@ -1,6 +1,6 @@
 package com.librarium.configuration;
 
-import lombok.Value;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("application.properties")
-@Value
+@Data
 public class Configuration {
 
     @Autowired

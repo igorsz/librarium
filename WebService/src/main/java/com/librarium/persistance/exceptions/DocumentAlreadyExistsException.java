@@ -1,6 +1,6 @@
 package com.librarium.persistance.exceptions;
 
-import com.librarium.event.FullDocumentPath;
+import com.librarium.common.event.FullDocumentPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;

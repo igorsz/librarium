@@ -1,6 +1,6 @@
 package com.librarium.eventhandler.controler;
 
-import com.librarium.eventhandler.kafka.KafkaMessageConsumer;
+import com.librarium.eventhandler.kafka.KafkaEventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/management")
 public class ManagementController {
 
-    public ManagementController() {
-        System.out.println("sasas");
-    }
 
     @Autowired
-    KafkaMessageConsumer kafkaMessageConsumer;
+    KafkaEventHandler kafkaMessageConsumer;
 
     @GetMapping(value = "/_health", produces = "text/plain")
     public ResponseEntity<String> getHealthStatus(){

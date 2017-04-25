@@ -1,6 +1,6 @@
-package com.librarium.eventhandler.event;
+package com.librarium.common.event;
 
-import com.librarium.eventhandler.event.exceptions.IndexNameException;
+import com.librarium.common.event.exceptions.IndexNameException;
 import lombok.Value;
 
 /**
@@ -13,7 +13,7 @@ public class Index {
     private String index;
 
     public Index(String index) throws IndexNameException {
-        if (!index.toLowerCase().equals(index)) {
+        if(!index.toLowerCase().equals(index)){
             throw new IndexNameException(index);
         }
         this.index = index;

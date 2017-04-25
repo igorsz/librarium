@@ -1,8 +1,8 @@
 package com.librarium.eventhandler.search;
 
 import com.google.gson.JsonParser;
+import com.librarium.common.event.Event;
 import com.librarium.eventhandler.configuration.Configuration;
-import com.librarium.eventhandler.event.Event;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;

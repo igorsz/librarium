@@ -1,6 +1,7 @@
 package com.librarium.authentication;
 
-import com.librarium.event.FullDocumentPath;
+
+import com.librarium.common.event.FullDocumentPath;
 
 /**
  * Created by Igor on 08.12.2016.

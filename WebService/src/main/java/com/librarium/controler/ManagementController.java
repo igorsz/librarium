@@ -1,9 +1,9 @@
 package com.librarium.controler;
 
+import com.librarium.common.event.Index;
+import com.librarium.common.event.exceptions.IndexNameException;
 import com.librarium.controler.api.ApiDispatcher;
 import com.librarium.kafka.KafkaMessageProducer;
-import com.librarium.event.Index;
-import com.librarium.event.exceptions.IndexNameException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

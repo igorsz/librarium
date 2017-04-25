@@ -108,5 +108,6 @@
     <orderEntry type="library" name="Maven: com.github.jnr:jnr-constants:0.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.datastax.cassandra:cassandra-driver-mapping:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="module" module-name="common" />
   </component>
 </module>

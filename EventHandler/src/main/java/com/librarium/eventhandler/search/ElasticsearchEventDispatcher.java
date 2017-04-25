@@ -1,6 +1,6 @@
 package com.librarium.eventhandler.search;
 
-import com.librarium.eventhandler.event.Event;
+import com.librarium.common.event.Event;
 import com.librarium.eventhandler.search.exceptions.NotRecognizedEventTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

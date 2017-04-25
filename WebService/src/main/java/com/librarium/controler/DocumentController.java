@@ -1,13 +1,13 @@
 package com.librarium.controler;
 
+import com.librarium.common.event.FullDocumentPath;
+import com.librarium.common.event.Index;
+import com.librarium.common.event.Type;
+import com.librarium.common.event.exceptions.IndexNameException;
+import com.librarium.common.event.exceptions.StringToJsonMappingException;
 import com.librarium.controler.api.ApiDispatcher;
-import com.librarium.event.exceptions.StringToJsonMappingException;
 import com.librarium.persistance.exceptions.DocumentAlreadyExistsException;
 import com.librarium.persistance.exceptions.DocumentNotExistsException;
-import com.librarium.event.FullDocumentPath;
-import com.librarium.event.Index;
-import com.librarium.event.exceptions.IndexNameException;
-import com.librarium.event.Type;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

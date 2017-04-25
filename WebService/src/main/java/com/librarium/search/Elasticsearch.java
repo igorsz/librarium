@@ -1,10 +1,10 @@
 package com.librarium.search;
 
 import com.librarium.authentication.DummyAuthentication;
+import com.librarium.common.event.FullDocumentPath;
+import com.librarium.common.event.Index;
+import com.librarium.common.event.Type;
 import com.librarium.configuration.Configuration;
-import com.librarium.event.FullDocumentPath;
-import com.librarium.event.Index;
-import com.librarium.event.Type;
 import com.librarium.kafka.KafkaMessageProducer;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.StringEntity;
@@ -57,17 +57,7 @@ public class Elasticsearch {
     }
 
     private void setUpClient(){
-//        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-//        credentialsProvider.setCredentials(AuthScope.ANY,
-//                new UsernamePasswordCredentials("elastic", "changeme"));
-
         restClient = RestClient.builder(new HttpHost("localhost", 9200)).build();
-//                .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-//                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-//                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-//                    }
-//                }).build();
-
         HostsSniffer hostsSniffer = new ElasticsearchHostsSniffer(restClient,
                 ElasticsearchHostsSniffer.DEFAULT_SNIFF_REQUEST_TIMEOUT,
                 ElasticsearchHostsSniffer.Scheme.HTTP);
@@ -76,22 +66,6 @@ public class Elasticsearch {
                 .setHostsSniffer(hostsSniffer)
                 .build();
     }
-
-    public Response search(){
-        String query = "{\"query\":{\"match_all\":{}}}";
-        Response response = null;
-        try {
-            response = restClient.performRequest(
-                    HTTP_GET,
-                    "_search",
-                    new Hashtable<String, String>(),
-                    new StringEntity(query));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
 
     public void search(JSONObject search, OutputStream outputStream) {
         executeESRequest(HTTP_POST, "/_search", search.toString(), outputStream);
@@ -140,7 +114,6 @@ public class Elasticsearch {
                     arrayToReturn.add(counter,hit);
                 }
             }
-            System.out.println("YR");
         } catch (ParseException e) {
             e.printStackTrace();
         }

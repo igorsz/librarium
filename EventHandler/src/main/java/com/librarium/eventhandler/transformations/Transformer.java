@@ -3,8 +3,8 @@ package com.librarium.eventhandler.transformations;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.librarium.common.event.Event;
 import com.librarium.eventhandler.configuration.Configuration;
-import com.librarium.eventhandler.event.Event;
 import com.librarium.eventhandler.persistance.Cassandra;
 import com.librarium.eventhandler.transformations.exceptions.FailedToCreateTransformationClassException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +71,6 @@ public class Transformer {
     }
 
     private void handleWrongTransformationName() {
-        //TODO create standard way to handle failed transformation requests
+        //use external service to inform client about transformation failure
     }
 }

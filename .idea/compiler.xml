@@ -22,11 +22,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="common" />
         <module name="EventHandler" />
         <module name="WebService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="common" target="1.5" />
       <module name="Configuration" target="1.5" />
       <module name="EventHandler" target="1.5" />
       <module name="librarium" target="1.5" />

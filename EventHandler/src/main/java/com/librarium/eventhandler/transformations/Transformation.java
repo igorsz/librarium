@@ -1,7 +1,7 @@
 package com.librarium.eventhandler.transformations;
 
-import com.librarium.eventhandler.event.Event;
-import org.springframework.stereotype.Component;
+
+import com.librarium.common.event.Event;
 
 import java.util.List;
 

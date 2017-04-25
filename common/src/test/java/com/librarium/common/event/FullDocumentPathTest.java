@@ -1,8 +1,8 @@
-package com.librarium.event;
+package com.librarium.common.event;
 
+import junit.framework.TestCase;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Created by Igor on 07.02.2017.
@@ -17,6 +17,6 @@ public class FullDocumentPathTest {
     @Test
     public void receiveCorrectFullDocumentPath(){
         FullDocumentPath fullDocumentPath = new FullDocumentPath(INDEX,TYPE,ID);
-        assertTrue(fullDocumentPath.getFullPath().equals(EXPECTED_VALUE));
+        TestCase.assertTrue(fullDocumentPath.getFullPath().equals(EXPECTED_VALUE));
     }
 }
