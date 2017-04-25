@@ -10,22 +10,22 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class ElasticsearchEventDispatcher {
+public class ElasticEventDispatcher {
 
-    private Elasticsearch elasticsearch;
+    private ElasticUpdater elasticUpdater;
 
     @Autowired
-    public ElasticsearchEventDispatcher(Elasticsearch elasticsearch) {
-        this.elasticsearch = elasticsearch;
+    public ElasticEventDispatcher(ElasticUpdater elasticUpdater) {
+        this.elasticUpdater = elasticUpdater;
     }
 
     public void handleEvent(Event event) throws NotRecognizedEventTypeException {
         switch (event.getEventType()) {
             case CREATE: case MODIFY:
-                elasticsearch.upsertDocument(event);
+                elasticUpdater.upsertDocument(event);
                 break;
             case DELETE:
-                elasticsearch.deleteDocument(event);
+                elasticUpdater.deleteDocument(event);
                 break;
             default:
                 throw new NotRecognizedEventTypeException(event.getEventType().name());

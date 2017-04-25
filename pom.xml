@@ -10,6 +10,7 @@
     <modules>
         <module>WebService</module>
         <module>EventHandler</module>
+        <module>common</module>
     </modules>
     <packaging>pom</packaging>
 </project>

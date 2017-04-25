@@ -1,5 +1,6 @@
 package com.librarium.search;
 
+import com.librarium.authentication.Authentication;
 import com.librarium.authentication.DummyAuthentication;
 import com.librarium.common.event.FullDocumentPath;
 import com.librarium.common.event.Index;
@@ -67,6 +68,11 @@ public class Elasticsearch {
                 .build();
     }
 
+    public Elasticsearch(RestClient restClient, Authentication authentication) {
+        this.restClient = restClient;
+        this.authentication = (DummyAuthentication) authentication;
+    }
+
     public void search(JSONObject search, OutputStream outputStream) {
         executeESRequest(HTTP_POST, "/_search", search.toString(), outputStream);
     }
@@ -81,7 +87,7 @@ public class Elasticsearch {
         executeESRequest(HTTP_POST, endpoint, search.toString(), outputStream);
     }
 
-    private void executeESRequest(String httpMethod, String endpoint, String query, OutputStream outputStream) {
+    void executeESRequest(String httpMethod, String endpoint, String query, OutputStream outputStream) {
         Response response;
         try {
             response = restClient.performRequest(
@@ -97,7 +103,7 @@ public class Elasticsearch {
         }
     }
 
-    private String checkResponseEntitlment(String stringResponse) {
+    String checkResponseEntitlment(String stringResponse) {
         JSONParser parser = new JSONParser();
         JSONObject jsonRespone;
         JSONArray arrayToReturn = new JSONArray();
@@ -115,12 +121,12 @@ public class Elasticsearch {
                 }
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Exception cought while parsing response: {}", stringResponse);
         }
         return arrayToReturn.toString();
     }
 
-    private void executeESRequest(String httpMethod, String endpoint, OutputStream outputStream) {
+    void executeESRequest(String httpMethod, String endpoint, OutputStream outputStream) {
         Response response;
         try {
             response = restClient.performRequest(
@@ -134,14 +140,14 @@ public class Elasticsearch {
         }
     }
 
-    private String prepareIndexString(List<Index> indexList) {
+    String prepareIndexString(List<Index> indexList) {
         String namespaces = indexList.get(0).getIndex();
         indexList.remove(0);
         for(Index index : indexList) namespaces += "," + index.getIndex();
         return namespaces;
     }
 
-    private String prepareTypeString(List<Type> typeList) {
+    String prepareTypeString(List<Type> typeList) {
         String namespaces = typeList.get(0).getType();
         typeList.remove(0);
         for(Type type : typeList) namespaces += "," + type.getType();

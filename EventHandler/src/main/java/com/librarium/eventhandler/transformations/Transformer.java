@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.librarium.common.event.Event;
 import com.librarium.eventhandler.configuration.Configuration;
-import com.librarium.eventhandler.persistance.Cassandra;
+import com.librarium.eventhandler.persistance.CassandraUpdater;
 import com.librarium.eventhandler.transformations.exceptions.FailedToCreateTransformationClassException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,12 @@ import java.util.Map;
 public class Transformer {
 
     private Configuration configuration;
-    private Map<String, Transformation> transformationMap;
+    Map<String, Transformation> transformationMap;
     private JsonParser parser;
-    private Cassandra cassandra;
+    private CassandraUpdater cassandra;
 
     @Autowired
-    public Transformer(Configuration configuration, Cassandra cassandra) throws FailedToCreateTransformationClassException {
+    public Transformer(Configuration configuration, CassandraUpdater cassandra) throws FailedToCreateTransformationClassException {
         this.configuration = configuration;
         this.parser = new JsonParser();
         this.cassandra = cassandra;
@@ -35,7 +35,12 @@ public class Transformer {
         createTransformationClasses(transformationClasses);
     }
 
-    private void createTransformationClasses(Map<String, String> transformationClasses) throws FailedToCreateTransformationClassException {
+    public Transformer(CassandraUpdater cassandra) {
+        this.transformationMap = new HashMap<String, Transformation>();
+        this.cassandra = cassandra;
+    }
+
+    void createTransformationClasses(Map<String, String> transformationClasses) throws FailedToCreateTransformationClassException {
         for (Map.Entry entry : transformationClasses.entrySet()) {
             try {
                 Class.forName(String.valueOf(entry.getValue())).getConstructor(String.class, Transformer.class).newInstance(entry.getKey(), this);
@@ -65,7 +70,7 @@ public class Transformer {
         return transformedEvent;
     }
 
-    private ArrayList prepareRequestedTransformationsMap(Event event) {
+    ArrayList prepareRequestedTransformationsMap(Event event) {
         JsonArray elements = event.getTransformations().getAsJsonArray("transformations");
         return new Gson().fromJson(elements, ArrayList.class);
     }

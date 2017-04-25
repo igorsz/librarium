@@ -3,6 +3,8 @@ package com.librarium.eventhandler.persistance;
 import com.datastax.driver.core.*;
 import com.librarium.common.event.Event;
 import com.librarium.eventhandler.configuration.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +15,17 @@ import javax.annotation.PreDestroy;
  */
 
 @Component
-public class Cassandra {
+public class CassandraUpdater {
+
+    private static final Logger logger = LogManager.getLogger(CassandraUpdater.class);
 
     private Configuration configuration;
     private Session session;
     private Cluster cluster;
+    PreparedStatement statement;
 
     @Autowired
-    public Cassandra(Configuration configuration) {
+    public CassandraUpdater(Configuration configuration) {
         this.configuration = configuration;
         String host = configuration.getCassandraConfiguration().getHost();
         String keyspace = configuration.getCassandraConfiguration().getKeySpace();
@@ -29,6 +34,11 @@ public class Cassandra {
                 .addContactPoint(host)
                 .build();
         this.session = cluster.connect(keyspace);
+        prepareStatements();
+    }
+
+    public CassandraUpdater(Session session) {
+        this.session = session;
     }
 
     @PreDestroy
@@ -36,10 +46,19 @@ public class Cassandra {
         cluster.close();
     }
 
-    public void updateMetadata(Event event) {
-        PreparedStatement statement = session.prepare(
+    void prepareStatements() {
+         statement = session.prepare(
                 "UPDATE metadata SET metadata = ? WHERE key = ?");
+    }
+
+    public boolean updateMetadata(Event event) {
         BoundStatement bind = statement.bind(event.getMetadata().toString(), event.getFullDocumentPath().getFullPath());
-        session.execute(bind);
+        try {
+            session.execute(bind);
+            return true;
+        } catch (Exception e) {
+            logger.error("Exception caught while executing statement: {}", bind);
+            return false;
+        }
     }
 }

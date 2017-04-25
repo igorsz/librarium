@@ -24,9 +24,9 @@ import java.util.Hashtable;
  */
 
 @Component
-public class Elasticsearch {
+public class ElasticUpdater {
 
-    private static final Logger logger = LogManager.getLogger(Elasticsearch.class);
+    private static final Logger logger = LogManager.getLogger(ElasticUpdater.class);
 
     private Configuration configuration;
     private RestClient restClient;
@@ -36,11 +36,14 @@ public class Elasticsearch {
 
 
     @Autowired
-    public Elasticsearch(Configuration configuration) {
+    public ElasticUpdater(Configuration configuration) {
         this.configuration = configuration;
         this.parser = new JsonParser();
         setUpClient();
+    }
 
+    public ElasticUpdater(RestClient restClient) {
+        this.restClient = restClient;
     }
 
     private void setUpClient() {
@@ -61,7 +64,7 @@ public class Elasticsearch {
         executeESRequest(HTTP_DELETE, event.getFullDocumentPath().getFullPath());
     }
 
-    private void executeESRequest(String httpMethod, String endpoint) {
+    String executeESRequest(String httpMethod, String endpoint) {
         Response response;
         try {
             response = restClient.performRequest(
@@ -70,8 +73,10 @@ public class Elasticsearch {
                     new Hashtable<String, String>());
             String stringResponse = EntityUtils.toString(response.getEntity());
             logger.info(stringResponse);
+            return stringResponse;
         } catch (IOException e) {
             logger.error("Request error. Endpoint: {}, http method: {}, stack: {}", endpoint, httpMethod, e.getStackTrace());
+            throw new RuntimeException("rest client request runtime exception thrown");
         }
     }
 
