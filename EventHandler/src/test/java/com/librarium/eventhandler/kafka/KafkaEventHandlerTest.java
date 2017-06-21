@@ -66,7 +66,8 @@ public class KafkaEventHandlerTest {
 
     private String getSerializedEvent() {
         return "{\"eventType\":\"CREATE\",\"fullDocumentPath\":{\"fullPath\"" +
-                ":\"index/type/id\"},\"metadata\":{\"key\":\"value\"},\"transformations\":{}}";
+                ":\"index/type/id\", \"index\":{\"index\":\"index\"}, \"type\":{\"type\":\"type\"}, \"documentId\":\"id\"}," +
+                "\"metadata\":{\"key\":\"value\"},\"transformations\":{}}";
     }
 
     @Test

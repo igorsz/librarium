@@ -63,7 +63,7 @@ public class DocumentController {
         return new ResponseEntity<String>(outputStream.toString(), getJsonHttpHeader(), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{index}/{type}/{documentId}", produces = "application/json")
+    @PutMapping(value = "/{index}/{type}/{documentId:.+}", produces = "application/json")
     public ResponseEntity<String> putDocument(@PathVariable String index,
                                               @PathVariable String type,
                                               @PathVariable String documentId,
@@ -73,14 +73,13 @@ public class DocumentController {
         String metadata = params.get("metadata");
         String transformations = params.get("transformations");
         if (!file.isEmpty()) {
-            byte[] bytes = file.getBytes();
             apiDispatcher.putDocument(new FullDocumentPath(index, type, documentId), file, metadata, transformations);
-            return new ResponseEntity<String>(new String(bytes), getJsonHttpHeader(), HttpStatus.OK);
+            return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
         }
         return new ResponseEntity<String>("no document provided", getJsonHttpHeader(), HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping(value = "/{index}/{type}/{documentId}", produces = "application/json")
+    @DeleteMapping(value = "/{index}/{type}/{documentId:.+}", produces = "application/json")
     public ResponseEntity<String> deleteDocument(@PathVariable String index,
                                                  @PathVariable String type,
                                                  @PathVariable String documentId)
@@ -89,7 +88,7 @@ public class DocumentController {
         return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{index}/{type}/{documentId}", produces = "application/json")
+    @PostMapping(value = "/{index}/{type}/{documentId:.+}", produces = "application/json")
     public ResponseEntity<String> updateDocument(@PathVariable String index,
                                                  @PathVariable String type,
                                                  @PathVariable String documentId,
@@ -100,7 +99,7 @@ public class DocumentController {
         return new ResponseEntity<String>("ok", getJsonHttpHeader(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{index}/{type}/{documentId}", produces = "text/plain")
+    @GetMapping(value = "/{index}/{type}/{documentId:.+}", produces = "text/plain")
     public ResponseEntity<String> getDocument(@PathVariable String index,
                                               @PathVariable String type,
                                               @PathVariable String documentId)

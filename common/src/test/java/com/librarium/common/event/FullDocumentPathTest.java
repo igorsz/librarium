@@ -1,5 +1,6 @@
 package com.librarium.common.event;
 
+import com.librarium.common.event.exceptions.IndexNameException;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ public class FullDocumentPathTest {
     private String EXPECTED_VALUE = "index/type/id";
 
     @Test
-    public void receiveCorrectFullDocumentPath(){
+    public void receiveCorrectFullDocumentPath() throws IndexNameException {
         FullDocumentPath fullDocumentPath = new FullDocumentPath(INDEX,TYPE,ID);
         TestCase.assertTrue(fullDocumentPath.getFullPath().equals(EXPECTED_VALUE));
     }

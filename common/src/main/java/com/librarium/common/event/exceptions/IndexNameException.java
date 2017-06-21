@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Index not valid")
-public class IndexNameException extends Exception {
+public class IndexNameException extends RuntimeException{
 
     private static final Logger logger = LogManager.getLogger(IndexNameException.class);
 
